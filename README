@@ -1,0 +1,14 @@
+Rwt is a framework that encapsulates the ExtJS javascript library and enables a new kind of templates where you use plain ruby code to program your application's visual interface.
+
+Below the views directory you can create ruby files with code like this:
+
+window(:title=>'First Test') do |w|
+    w << button(:text=>'Displays a message') do |b|
+        b.on_click= message('Rwt will make your life easier!')
+    end
+    w << button(:text=>'Creates a new window') do |b|
+        b.on_click= w.call_view('/test/window2')
+    end
+    w.show
+end
+
