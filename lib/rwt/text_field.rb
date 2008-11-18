@@ -23,17 +23,17 @@
 #  end
 #     
 module Rwt
-  def text_field(config={},&block)
-    TextField.new(config,&block)
+  def text_field(*config,&block)
+    TextField.new(*config,&block)
   end
-  class TextField<Rwt::Component
+  class TextField < Component
     attr_accessor :name
 
     def init_cmp
-      @name= @config.delete(:name) || @config[:id]
     end
     
     def render
+      @name= @config.delete(:name) || @config[:id]
 #      listeners=@config.delete(:listeners) || {}
 #      listeners.merge!(:click=>@on_click) if @on_click
 #      @config.merge!(:listeners=>listeners)

@@ -10,6 +10,7 @@ require 'rwt'
 class Test_app < Test::Unit::TestCase
   def test_just_prologue_epilogue
     a= Rwt::SimpleApp.new()
+#    a=app()
     assert(a.render == a.prologue+a.epilogue, 'Render minumum render')
     b= a.render do |app|
       app<<['test1']

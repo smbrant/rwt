@@ -29,7 +29,7 @@ class TestDbGrid < Test::Unit::TestCase
   include Rwt
   def test_basic
     g= db_grid(:model=>Post)
-    puts g.render
+#    puts g.render
 #    assert(false, 'Assertion was false.')
   end
 end

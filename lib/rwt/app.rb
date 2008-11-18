@@ -19,8 +19,8 @@ module Rwt
   #    end
   #  end
   #  
-  def rwt_app(config={},&block)
-    App.new(config,&block)
+  def rwt_app(*config,&block)
+    App.new(*config,&block)
   end
   def call_view(url)
     js("getJs.createCallback('#{url}')")
@@ -78,10 +78,13 @@ module Rwt
         "Rwt.message=function(title,message){",  # Show a message in a modal window
             "Ext.Msg.alert(title,message)",
         "};",
-        "App=Rwt;"
+        "App=Rwt;",
+        "Ext.QuickTips.init();"
       ).render
       @components.each do |cmp|
-        code << cmp.render << '(Rwt);'   # Renders the component function passing the Rwt environment
+        code << cmp.render 
+        code << '(Rwt);' if cmp.class.ancestors.include?(Rwt::Component) # Renders the component function passing the Rwt environment
+        code << '(Rwt);' if cmp.class.ancestors.include?(Program) # Renders the component function passing the Rwt environment
       end
       code << '});'
     end

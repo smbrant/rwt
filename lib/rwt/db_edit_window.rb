@@ -11,6 +11,7 @@
 #                   ['field1',{:name=> 'field2', :fieldLabel=> 'Field2',  :xtype=> 'textfield'},...]
 #   :data -       data record
 #   :id -         the id of record. If nil, create a new record
+#   :labelWidth-  label width
 #
 require 'ext'
 
@@ -29,6 +30,7 @@ module Rwt
           @data= config[:data] || nil
           @title= config[:title] || ''
           @id= config[:id] || nil  # TODO: raise exception for all necessary parameters...
+          @labelWidth= config[:labelWidth] || 120
         else
           raise "You should pass a hash as parameter"
       end
@@ -78,29 +80,34 @@ module Rwt
         if @id # Only generate values if id given (updating a record)
           case field  # According to case f above
             when Hash # String, Array ou Hash  --> Hash field
-              form_values << {:id=>field[:name],:value=>@data.send(fName)||''}
+#              form_values << {:id=>field[:name],:value=>@data.send(fName).to_s_br||"''"}
+#              form_values << {:id=>field[:name],:value=>@data.send(fName).to_s||"''"}
+              form_values << {:id=>field[:name],:value=>@data.send(fName).to_s.gsub("\n","\\n")||"''"}
             when Ext::Dict # Dict --> Dict field
-              form_values << {:id=>field.name,:value=>@data.send(fName)||''} # field.name only works because it's a Dict, see Dict class: method_missing
+#              form_values << {:id=>field.name,:value=>@data.send(fName).to_s_br||"''"} # field.name only works because it's a Dict, see Dict class: method_missing
+#              form_values << {:id=>field.name,:value=>@data.send(fName).to_s||"''"} # field.name only works because it's a Dict, see Dict class: method_missing
+              form_values << {:id=>field.name,:value=>@data.send(fName).to_s.gsub("\n","\\n")||"''"} # field.name only works because it's a Dict, see Dict class: method_missing
           end
         end
       end
 
       program(
-        ds=var("App.lastDs"),  # ds aqui é uma variavel auxiliar, local
+#        ds=var("App.lastDs"),  # ds aqui é uma variavel auxiliar, local
 
         win=var(Ext::Window.new({
                   :width=> @width,
                   :height=> @height,
                   :title=> @title || 'Edição de registro',
                   :modal=> true,
-                  :listeners=>{:close=>function("#{ds}.load()")},
+#                  :listeners=>{:close=>function("#{ds}.load()")},
+                  :listeners=>{:close=>function("owner.ds.load()")},
                   :show=> false
                 })),
             
         "Ext.form.Field.prototype.msgTarget = 'side'",
         panel=var(),
         panel.object=Ext::FormPanel.new({
-                  :labelWidth=>   120, # label settings here cascade unless overridden
+                  :labelWidth=>   @labelWidth, # label settings here cascade unless overridden
                   :url=>          "/#{controller_name}/create",
                   :waitMsgTarget=> true,
                   :bodyStyle=>     'padding:5px 5px 0',
@@ -135,8 +142,14 @@ module Rwt
             :actioncomplete=>function(:form,:action,
                               "if(action.type == 'submit'){",
                                  "if(!action.result.message){",
-                                    "#{win}.close();#{ds}.load();}",
-                                 'else{',
+#                                    "#{win}.close();#{ds}.load();}",
+#                                    "#{win}.close();owner.ds.load();",
+                                    "#{win}.close();",
+                                    "owner.ds.load();",
+#                                    "Rwt.debug('fechando...');",
+#                                    "owner.ds.load({params: {start: #{session[:atividade_pagination_state][:start]}, limit:#{session[:atividade_pagination_state][:limit]}}});",
+#                                    "owner.ds.load({params: {start: 8, limit:8}});",
+                                 '}else{',
                                     "App.message('Mensagem',action.result.message);",
                                  "}",
                                "}"

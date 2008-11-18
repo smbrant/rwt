@@ -20,8 +20,8 @@ module Rwt
   #    w.show
   #  end
   #     
-  def button(config={},&block)
-    Button.new(config,&block)
+  def button(*config,&block)
+    Button.new(*config,&block)
   end
   class Button<Rwt::Component
     attr_accessor :text

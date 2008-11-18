@@ -16,7 +16,7 @@ class TestJsonStore < Test::Unit::TestCase
               :autoLoad=> true,
               :fields=> ['id', 'nome','uf']
           })
-     puts a.render
+#     puts a.render
 #    assert(false, 'Assertion was false.')
   end
 end

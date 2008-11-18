@@ -13,10 +13,8 @@ class TestVar < Test::Unit::TestCase
     p= program(
       v=var(Ext::Window.new(:show=>false)),
       v.on({:activate=>function('alert("teste")')})
-#      v.show().xx(:teste=>'a',:t2=>'b')
     ).render
-#    puts p
-    assert(p.include?('v1='), 'Should create a javascript variable')
+    assert(p.include?(v.name+'='), 'Should create a javascript variable')
   end
   
   def test_property  # nao deu, queria poder atribuir valor a uma propriedade
@@ -25,6 +23,6 @@ class TestVar < Test::Unit::TestCase
       v.url="'/new_test'"
 #      v.show().xx(:teste=>'a',:t2=>'b')
     ).render
-    puts p
+#    puts p
   end
 end

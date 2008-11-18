@@ -43,8 +43,8 @@ module Rwt
   #    end
   #  end
   #  
-  def toolbar(config={},&block)
-    Toolbar.new(config,&block)
+  def toolbar(*config,&block)
+    Toolbar.new(*config,&block)
   end
   class Toolbar < Rwt::Component
 
@@ -74,5 +74,49 @@ module Rwt
       end
     end
     
-  end 
+  end
+  
+  def text(*config,&block)
+    Text.new(*config,&block)
+  end
+  class Text < Component
+    def render
+      if @owner.class == Toolbar     # inside a toolbar whe should use tbtext
+        @config.merge!(:xtype=>'tbtext')
+      end
+      @config.render
+    end
+  end
+  
+  def menu(*config,&block)
+    Menu.new(*config,&block)
+  end
+  class Menu < Component
+    def render
+      @config.merge(:menu=>@components).render
+    end
+  end
+  
+  def menu_item(*config,&block)
+    MenuItem.new(*config,&block)
+  end
+  
+  #
+  # MenuItem
+  # 
+  # Parameters:
+  # 
+  # Default parameter order:
+  # text, handler
+  #
+  class MenuItem < Component
+    def init_default_par(non_hash_params)
+       @config[:text]=non_hash_params[0] if non_hash_params[0].class == String
+       @config[:handler]= non_hash_params[1] if non_hash_params[1]
+    end
+
+    def render
+      @config.render
+    end
+  end
 end

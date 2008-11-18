@@ -10,7 +10,7 @@ class TestButton < Test::Unit::TestCase
         b.on_click=function("Alert('button');")
       end
     end
-    puts win.render
+#    puts win.render
 #    assert(false, 'Assertion was false.')
   end
 end

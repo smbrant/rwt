@@ -4,10 +4,7 @@ require 'rwt/component'
 class TestComponent < Test::Unit::TestCase
   def test_basic
     c= Rwt::Component.new(:p1=>'p1',:p2=>'p2')
-#    c.config.each do |key,value|
-#      puts ":#{key}=>#{value}"
-#    end
-   assert(c.config[:p1]=='p1' && c.config[:p2]=='p2'&&c.config[:id]=='rwt_1', 'Error in configuration values.')
+   assert(c.config[:p1]=='p1' && c.config[:p2]=='p2', 'Error in configuration values.')
   end
   
   def test_block
@@ -44,6 +41,6 @@ class TestComponent < Test::Unit::TestCase
   def test_program
     comp=Rwt::Component.new
     a= comp.program('test1','test2').render
-    assert(a=='(function(cmp){test1;test2;})','Different generated javascript.')
+    assert(a=='(function(owner){test1;test2;})','Different generated javascript.')
   end
 end

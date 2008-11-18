@@ -10,6 +10,9 @@ require 'rwt/form'
 require 'rwt/text_field'
 require 'rwt/button'
 require 'rwt/db_grid'
+require 'rwt/grid'
+require 'rwt/dialog_window'
+require 'rwt/action_view/helpers/active_record_helper'
 #
 #  Rails Web Toolkit - Copyright (c) 2008 accesstecnologia.com.br
 #  
@@ -167,6 +170,50 @@ module Rwt
     render :text => {:success=>true,:message=>msg}.to_json
   end
 
+#-
+  #
+  #  rwt_err_messages
+  #  ================
+  #  
+  #  Prepares a response to a post request, in the case of errors
+  #  found in the database operation
+  #  
+  #  Parameter
+  #  =========
+  #    - base instance
+  #  
+  #  Use
+  #  ===
+  #  
+  #  def update
+  #    @post= Post.find(params[:id])
+  #    if @post.update_attributes(params[:post])
+  #      rwt_ok
+  #    else
+  #      rwt_err_messages(@post)
+  #    end
+  #  end
+  #
+  def rwt_err_messages(base)
+    case base
+      when ActiveRecord::Base
+        msg= ''
+        base.errors.each do |key,errors|
+          if base.class.respond_to?('titles')
+            key_title= base.class.titles[key.to_sym] || base.class.titles[key] || key.humanize
+          else
+            key_title= key.humanize
+          end
+          
+          msg << "<b>#{key_title}: </b> "
+          errors.each do |e|
+            msg << "#{e}<br>"
+          end
+        end
+    end
+    render :text => {:success=>true,:message=>msg}.to_json
+  end
+#-
   #
   #  explicit_js
   #  ===========
@@ -228,7 +275,7 @@ module Rwt
   #          ]
   #   }
   #
-  def form_line(fields={},config=[],padding_top=0,padding_left=20,padding_botton=0)
+  def form_line(fields={},config=[],padding_top=0,padding_left=10,padding_botton=0)
     items=[]
     config.each do |field|
       begin

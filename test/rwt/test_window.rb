@@ -4,6 +4,7 @@ require 'test/unit'
 require 'rwt'
 
 class TestWindow < Test::Unit::TestCase
+  include Rwt
   def test_basic
     win= Rwt::Window.new() do |w|
       w.title='Window Test'
@@ -18,10 +19,11 @@ class TestWindow < Test::Unit::TestCase
   end
   
   def test_events
-    win= Rwt::Window.new() do |w|
-      w.on_close=function("alert('teste')")
+    win= window(:title=>'teste',:x=>10) do |w|
+      w.on_close=function("alert('test')")
     end
-    puts win.render
+#    puts win.render
+    assert(win.render.include?("close:function(){alert('test')}"),"Does not include close event")
   end
   
   

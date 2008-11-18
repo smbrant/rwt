@@ -74,7 +74,7 @@ class Array
       element_class = first.class
     end
     element_count = options.delete(:count) || self.length
-    fields= options.delete(:fields) || nil
+    fields= options.delete(:fields) || element_class.column_names
 
 #    { :results => element_count, element_class.table_name.to_s => self }.to_json(options)
     
@@ -84,8 +84,8 @@ class Array
 #      { :results => element_count, element_class.to_s.underscore => self }.to_json(options)
 #    end
 
-    if !fields # send complete records
-      { :results => element_count.to_s, element_class.to_s.underscore => self }.to_json(options)        
+    if !fields # send complete records  - never more, use always the else, see fields=
+      { :results => element_count.to_s, element_class.to_s.underscore => self }.to_json(options)
     else # send just the data that whas asked for
       if !fields.include?('id')
         fields << 'id'

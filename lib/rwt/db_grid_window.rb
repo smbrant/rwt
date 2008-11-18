@@ -15,6 +15,12 @@
 #   :pageSize -   number of records per page (defaults to 8)                
 #   :filter -     defaults to true, enables/disables the filtering field
 #   :readOnly -   defaults to false, if true inhibit modifications
+#   :show_new_btn - true/false, force to show/hide new button
+#   :show_edit_btn - true/false, force to show/hide edit button
+#   :show_delete_btn - true/false, force to show/hide delete button
+#   :id - an id to insert as a parameter in the json get (optional)
+#   :json_params - a hash of parameters to send with the json request
+#   :adv_search_view - url to adv_search view
 #
 # Revisions:
 #   22/07/2008, smb, refactored, filtering option, your controller can treat a 'filter' parameter that is 
@@ -24,18 +30,66 @@ require 'ext'
 
 module Rwt
   class DbGridWindow
-    @@x= 20  # Posicionamento da última janela criada
+    @@x= 20  
     @@y= 20
 
     def self.new_x
-      @@x+= 20; @@x= 40 if @@x > 200
+      @@x+= 20; @@x= 40 if @@x > 100
       return @@x
     end
 
     def self.new_y
-      @@y+= 20; @@y= 40 if @@y > 200
+      @@y+= 20; @@y= 40 if @@y > 100
       return @@y
     end
+
+    # Copied from Rwt::Component
+    def prepare_owner # Create local callbacks for this component
+      js( 
+        "var errJs=function(response,options){",  # Error callback
+        "};",
+        "var exeJs= function(){};",               # Javascript execution callback (will be redefined by pass_owner)
+
+        "var getJs=function(url){",               # getJs for this component (local var)
+          "Ext.Ajax.request({",
+            "url: url,",
+            "success: exeJs,",
+            "failure: errJs",
+          "});",
+        "}"
+        ).render
+    end
+
+    def pass_owner(owner) # Redefines exeJs for this component (owner redefined)
+      js( 
+        "exeJs= function(xhttp){",             # Local javascript execution callback (created in prepare_owner)
+          "var ret=eval(xhttp.responseText+'(#{owner})');", #   Execute received js
+        "}"
+        ).render
+    end
+    
+    def owner  # just returns a javascritp var named 'owner' (it is passed to the js creation function)
+      aowner=var()
+      aowner.name='owner'
+      return aowner
+    end
+    
+    def call_view(url)
+      js("getJs.createCallback('#{url}')")
+    end
+
+    # ... from component
+
+    def json_params
+      params=''
+      if @json_params
+        @json_params.each do |key,value|
+          params << "&#{key.to_s}=#{value.to_s}"
+        end
+      end
+      return params
+    end
+
 
     def initialize(config)
       
@@ -66,6 +120,31 @@ module Rwt
                     else
                       false
                     end
+          @print= if config.key?(:print)
+                      config[:print]
+                    else
+                      false
+                    end
+          @id = config[:id] || nil
+          @json_params= config[:json_params] || nil
+          @adv_search_view= config[:adv_search_view] || nil
+
+          @show_new_btn= if config.key?(:show_new_btn)
+                      config[:show_new_btn]
+                    else
+                      false
+                    end
+          @show_edit_btn= if config.key?(:show_edit_btn)
+                      config[:show_edit_btn]
+                    else
+                      false
+                    end
+          @show_delete_btn= if config.key?(:show_delete_btn)
+                      config[:show_delete_btn]
+                    else
+                      false
+                    end
+          
       else
           raise "You should pass a hash as parameter"
       end
@@ -110,11 +189,13 @@ module Rwt
         end
         fields_json << f_name
       end
-      
+
+        
       program(
+        prepare_owner,
         ds=var(Ext::Data::Store.new({
               :proxy=>Ext::Data::HttpProxy.new({
-                  :url=>"/#{controller_name}/index?format=json&fields=#{fields_json.join(',')}", # later &filter=value
+                  :url=>"/#{controller_name}/index?format=json&id=#{@id}#{json_params}&fields=#{fields_json.join(',')}", # later &filter=value
                   :method=> 'GET'
                 }),
               :reader=> Ext::Data::JsonReader.new({
@@ -127,8 +208,88 @@ module Rwt
               :sortInfo=> {:field=> 'id', :direction=> 'ASC'}
             })),
         cm=var(Ext::Grid::ColumnModel.new(fields_b)),
-        "App.lastDs=#{ds}", # save ds temporaly in App.lastDs, the next open window will keep it in prived place
+        
+#        "App.lastDs=#{ds}", # save ds temporaly in App.lastDs, the next open window will keep it in prived place
+        
         grid=var(),
+
+        new_btn={
+                :text=>'Novo...',
+                :tooltip=>'Criar um novo registro',
+                :handler=>function(
+                            "getJs('/#{controller_name}/new.js');"
+                          ),
+                :iconCls=>'add'
+                },
+        edit_btn={
+                :text=>'Editar...',
+                :tooltip=>'Editar o registro selecionado',
+                :handler=> function(
+                             "var selected = #{grid}.getSelectionModel().getSelected();",
+                             'if(selected){',
+#                                "App.lastDs=#{ds};",
+                                "getJs('/#{controller_name}/edit/' + selected.data.id + '.js');",
+                             '} else { ',
+                               "App.message('Mensagem','Selecione um registro, por favor.');",
+                             '}'
+                           ),
+                },
+        delete_btn={
+                  :text=>'Apagar...',
+                  :tooltip=>'Apagar o registro selecionado',
+                  :handler=> function(
+                               "var selected = #{grid}.getSelectionModel().getSelected();",
+                               'if(selected){',
+                                 "if(confirm('Tem certeza?')){",
+                                    'var conn = new Ext.data.Connection();',
+                                    'conn.request({',
+                                        "url:'/#{controller_name}/destroy/'+selected.data.id",
+                                        ",params: {", # _method: 'DELETE',",
+                                                  if @authenticity_token != ''
+                                                    "authenticity_token: '#{@authenticity_token}'"
+                                                  else
+                                                    ''
+                                                  end,
+                                                "},",
+                                        "success: function(response, options){ #{ds}.load(); },",
+                                        "failure: function(response, options){ App.message('Falhou.'); }",
+                                    "});",
+                                 '}',
+                               '} else { ',
+                                 "App.message('Mensagem','Selecione um registro, por favor.');",
+                               '}'
+                             ),
+                  :iconCls=>'remove'
+                  },
+
+        adv_search_btn={:xtype=>'button',
+                    :width=>50,
+                    :text=>'Pesquisa Avançada',
+                    :handler=>call_view(@adv_search_view)
+                  },
+
+        explicit_buttons=[],
+        if @show_new_btn
+          explicit_buttons << new_btn
+        end,
+        if @show_edit_btn
+          if explicit_buttons.length > 0
+            explicit_buttons << '-'
+          end
+          explicit_buttons << edit_btn
+        end,
+        if @show_delete_btn
+          if explicit_buttons.length > 0
+            explicit_buttons << '-'
+          end
+          explicit_buttons << delete_btn
+        end,
+        if @adv_search_view
+          if explicit_buttons.length > 0
+            explicit_buttons << '-'
+          end
+          explicit_buttons << adv_search_btn
+        end,
         grid.object=Ext::Grid::GridPanel.new({
             :ds=> ds,
             :cm=> cm,
@@ -139,56 +300,41 @@ module Rwt
             :stripeRows=> true,
             :viewConfig=> {:forceFit=>true},
             :tbar=>if @read_only
-                     []
+              explicit_buttons
             else
               [
-              {
-                :text=>'Novo...',
-                :tooltip=>'Criar um novo registro',
-                :handler=>function(
-                            "App.lastDs=#{ds};",
-                            "getJs('/#{controller_name}/new.js');"
-                          ),
-                :iconCls=>'add'
-                },'-',{
-                :text=>'Editar...',
-                :tooltip=>'Editar o registro selecionado',
+                new_btn,'-',edit_btn,'-',delete_btn,
+                if @print
+                  '-'
+                else
+                  {}
+                end,
+                if @print
+                  {
+                :text=>'Imprimir...',
+                :tooltip=>'Imprimir o registro selecionado',
                 :handler=> function(
                              "var selected = #{grid}.getSelectionModel().getSelected();",
                              'if(selected){',
-                                "App.lastDs=#{ds};",
-                                "getJs('/#{controller_name}/edit/' + selected.data.id + '.js');",
+                                "window.open('/#{controller_name}/print/' + selected.data.id );",
                              '} else { ',
                                "App.message('Mensagem','Selecione um registro, por favor.');",
                              '}'
                            ),
-                },'-',{
-                :text=>'Apagar...',
-                :tooltip=>'Apagar o registro selecionado',
-                :handler=> function(
-                             "var selected = #{grid}.getSelectionModel().getSelected();",
-                             'if(selected){',
-                               "if(confirm('Tem certeza?')){",
-                                  'var conn = new Ext.data.Connection();',
-                                  'conn.request({',
-                                      "url:'/#{controller_name}/destroy/'+selected.data.id",
-                                      ",params: {", # _method: 'DELETE',",
-                                                if @authenticity_token != ''
-                                                  "authenticity_token: '#{@authenticity_token}'"
-                                                else
-                                                  ''
-                                                end,
-                                              "},",
-                                      "success: function(response, options){ #{ds}.load(); },",
-                                      "failure: function(response, options){ App.message('Falhou.'); }",
-                                  "});",
-                               '}',
-                             '} else { ',
-                               "App.message('Mensagem','Selecione um registro, por favor.');",
-                             '}'
-                           ),
-                :iconCls=>'remove'
-              }              
+                   }
+                else
+                  {}
+                end,
+                if @adv_search_view
+                  '-'
+                else
+                  {}
+                end,
+                if @adv_search_view
+                  adv_search_btn
+                else
+                  {}
+                end
             ]
             end
           }),
@@ -196,14 +342,14 @@ module Rwt
         if @read_only
           grid.on({
               :rowdblclick=>function(:grid,:row,:e,
-                  "App.lastDs=#{ds};",
+#                  "App.lastDs=#{ds};",
                   "getJs('/#{controller_name}/show/'+grid.getStore().getAt(row).id+'.js')" # show
                 )
             })
         else
           grid.on({
               :rowdblclick=>function(:grid,:row,:e,
-                  "App.lastDs=#{ds};",
+#                  "App.lastDs=#{ds};",
                   "getJs('/#{controller_name}/edit/'+grid.getStore().getAt(row).id+'.js')" # edit
                 )
             })
@@ -212,37 +358,33 @@ module Rwt
         "#{ds}.load({params: {start: 0, limit:#{@page_size}}})",
         
         thread=var('null'),
-        filter=var("''"),
+
+        search_field=var(),
         
         do_search=var(function(
             "if(#{thread}){clearInterval(#{thread})}",
-            "#{ds}.proxy.conn.url='/#{controller_name}/index?format=json&fields=#{fields_json.join(',')}&filter='+#{filter};",
+            "#{ds}.proxy.conn.url='/#{controller_name}/index?format=json&fields=#{fields_json.join(',')}&filter='+#{search_field}.getValue();",
             "#{ds}.reload();"
           )),
         
-        search_field=var(Ext::Form::TextField.new(
+        search_field.object=Ext::Form::TextField.new(
                     :width=>@width-10,
                     :enableKeyEvents=>true,
                     :listeners=>{
-                        :keypress=>function(:f,:e,
+                         :keyup=>function(:f,:e,
                             "if(#{thread}){clearInterval(#{thread})}",
-                            "var key='';",
-                            "if (e.getKey()>31 && e.getKey()<126){key=String.fromCharCode(e.getKey())}",
-                            "#{filter}=f.getValue()+key;",
-                            "if (e.getKey()==e.BACKSPACE){#{filter}=#{filter}.substring(0,#{filter}.length-1)}",
                             "#{thread}=setInterval(#{do_search},1000);"
-                          )
+                            )
                         }
-                    )),
-        
+                    ),
         control_panel= var({
             :xtype=>'panel',
             :border=>false,
-            :layout=>'column',
+#            :layout=>'column',
             :items=>[
                {:width=>@width-10,
                 :border=>false,
-                :items=>search_field
+                :items=>[search_field]
                 }
              ]
           }),
@@ -268,6 +410,8 @@ module Rwt
               })
             })
           ),
+        "#{win}.ds=#{ds}",
+        pass_owner(win),
         win.show(),
         
         # focus on search field:
@@ -275,7 +419,6 @@ module Rwt
 
       ).render
 
-      
     end
   end
 end

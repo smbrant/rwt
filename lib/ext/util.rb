@@ -9,6 +9,7 @@
 #   03/06/08, smb, new method_missing in Var
 #
 
+require File.join(File.dirname(__FILE__),'list')
 
 # Javascript utilities:
 
@@ -131,6 +132,22 @@ class Program
   end
 end
 
+#
+#  Snippet: The same as Program, without encapsulating prologue/epilogue
+#  
+def snippet(*code)
+  Snippet.new(*code)
+end
+class Snippet < Program
+  def prologue
+    ''
+  end
+  def epilogue
+    ''
+  end
+  
+end
+
 class Function < JS
   def initialize(*code)
     @code= code
@@ -212,6 +229,15 @@ class Var
       js(@named ? "if(!#{@prefix}#{@name}){":'' ,@named ? @prefix : 'var ',self.name,'=',self.object, @named ? '}' :'' ).render
     else
       ''
+    end
+  end
+  
+  def jsObject  # get the real js object
+    case @object
+      when Hash  # the var object is a hash (representing the future js object)
+        js("Ext.getCmp('#{@object[:id]}')")  # ask Ext to find the real object
+      else
+        js(self.name) # I am an js object
     end
   end
   
@@ -414,6 +440,23 @@ module Ext
     #
     def self.decr_indent
       @@indentation-= 1 if @@indentation > 0
+    end
+  end
+end
+
+# util from ExtJS:
+module Ext
+  module Util
+    module Format
+      def self.usMoney
+        UsMoney.new
+      end
+      class UsMoney < Hash;def prologue;'Ext.util.Format.usMoney' end;def epilogue;'' end end
+      
+      def self.dateRenderer(*config)
+        DateRenderer.new(config)
+      end
+      class DateRenderer < List;def prologue;'Ext.util.Format.dateRenderer(' end;def epilogue;')' end end
     end
   end
 end

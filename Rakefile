@@ -7,7 +7,7 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
-Rake::TestTask.new(:rwt) do |t|
+Rake::TestTask.new(:rwt_tests) do |t|
    t.libs << "rwt"
    t.test_files = FileList['test/**/test*.rb']
    t.verbose = true

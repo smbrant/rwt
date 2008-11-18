@@ -24,7 +24,7 @@ module Rwt
   #  Use
   #  ===
   #  
-  #  The basic form of use is by creating instances of the components in the views
+  #  The basic form of use is creating instances of the components in the views
   #  activated by rwt_template:
   #  
   #  component(:config_par1=>value1,....) do |parent|
@@ -35,8 +35,8 @@ module Rwt
   #    end
   #  end
   #
-  def component(config={},&block)
-    Component.new(config,&block)
+  def component(*config,&block)
+    Component.new(*config,&block)
   end
   class Component
     @@id= 0
@@ -45,16 +45,35 @@ module Rwt
     attr_reader :config
     attr_accessor :owner
 
-    def init_cmp
+    # Default @config initialization
+    # Components that accepts parameters in default order should override this
+    def init_default_par(non_hash_params)
+       @config[:text]=non_hash_params[0] if non_hash_params[0].class == String
     end
+
+    def init_cmp
+      # If necessary, override in derived component
+    end    
     
-    def initialize(config={})
-      @config=config
+    def initialize(*config)
+      @config={}
+      non_hash=[]
+      config.each do |p|
+        case p
+          when Hash # put all hashs in @config
+            @config.merge!(p)
+          else # the rest of parameters will be passed to init_default_par, override if necessary
+            non_hash << p
+        end
+      end
+      init_default_par(non_hash)
+
       @config[:id]= "rwt_#{@@id+=1}" if !@config[:id]
-      @components= [] if !@config[:components]
+
+      @components= @config.delete(:components) || []
 
       init_cmp
-
+      
       if block_given?
         yield self
       end
@@ -73,8 +92,8 @@ module Rwt
       end
       return child
     end
-    
-    def render  # Should be overriden in derived class
+
+    def render  # Should be overriden in derived class, this is the default render
       items= @config.delete(:items) || []
       items+= @components
       @config.merge!(:items=>items) if items.length > 0
@@ -88,6 +107,8 @@ module Rwt
     def show
       function("Ext.getCmp('#{@config[:id]}').show()")
     end
+    
+    
 
     def program(*code)
       ComponentProgram.new(*code)
@@ -126,6 +147,12 @@ module Rwt
       aowner.name='owner'
       return aowner
     end
+    
+    def jsObject  # get the real js object
+#      "Ext.getCmp('#{@config[:id]}')"  # ask Ext to find the real object
+      "Ext.get('#{@config[:id]}')"  # ask Ext to find the real object
+    end
+    
     
   end 
   

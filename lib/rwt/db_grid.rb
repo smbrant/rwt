@@ -38,8 +38,8 @@
 
 
 module Rwt
-  def db_grid(config={},&block)
-    DbGrid.new(config,&block)
+  def db_grid(*config,&block)
+    DbGrid.new(*config,&block)
   end
   
   class DbGrid < Rwt::Component

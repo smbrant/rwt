@@ -12,8 +12,8 @@ class TestAppCmp < Test::Unit::TestCase
   include Rwt
   def test_basic
     ap = Rwt::App.new()
-    ap=app
-    puts ap.render
+#    ap=app
+#    puts ap.render
 #    assert(false, 'Assertion was false.')
   end
 end
