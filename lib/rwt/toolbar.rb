@@ -44,7 +44,7 @@ module Rwt
   #  end
   #  
   def toolbar(*config,&block)
-    Toolbar.new(*config,&block)
+    Toolbar.new(self,*config,&block)
   end
   class Toolbar < Rwt::Component
 
@@ -52,39 +52,19 @@ module Rwt
       @place= @config.delete(:place)
     end
 
-    def render
-      if @owner.class == Rwt::App || @owner.class == NilClass
-        program(
-          js("var tb=new Ext.Toolbar({items:",@components,"});",
-              if @place
-                "if(!Ext.get('#{@place}')){"+
-                  'var div=document.createElement("div");'+
-                  "div.setAttribute('id','#{@place}');"+
-                  'document.getElementsByTagName("body")[0].appendChild(div)'+
-                '}'+
-                "tb.render('#{@place}');"
-              else
-                "if (owner==Rwt){tb.render(document.body)}"
-              end,
-              "if(!owner.tb){owner.tb=tb}"
-            ).render
-          ).render
-      else
-        {:xtype=>'toolbar',:items=>@components}.render
-      end
+    def render_create
+      "/* #{Rwt.adapter} adapter should create a toolbar here - fix it */"
     end
     
   end
   
+
   def text(*config,&block)
     Text.new(*config,&block)
   end
   class Text < Component
-    def render
-      if @owner.class == Toolbar     # inside a toolbar whe should use tbtext
-        @config.merge!(:xtype=>'tbtext')
-      end
-      @config.render
+    def render_create
+      "/* #{Rwt.adapter} adapter should create a text here - fix it */"
     end
   end
   
@@ -92,14 +72,11 @@ module Rwt
     Menu.new(*config,&block)
   end
   class Menu < Component
-    def render
-      @config.merge(:menu=>@components).render
+    def render_create
+      "/* #{Rwt.adapter} adapter should create a menu here - fix it */"
     end
   end
   
-  def menu_item(*config,&block)
-    MenuItem.new(*config,&block)
-  end
   
   #
   # MenuItem
@@ -109,14 +86,17 @@ module Rwt
   # Default parameter order:
   # text, handler
   #
+  def menu_item(*config,&block)
+    MenuItem.new(*config,&block)
+  end
   class MenuItem < Component
     def init_default_par(non_hash_params)
        @config[:text]=non_hash_params[0] if non_hash_params[0].class == String
        @config[:handler]= non_hash_params[1] if non_hash_params[1]
     end
 
-    def render
-      @config.render
+    def render_create
+      "/* #{Rwt.adapter} adapter should create a menu here - fix it */"
     end
   end
 end

@@ -21,7 +21,7 @@ module Rwt
   #  end
   #     
   def form(*config,&block)
-    Form.new(*config,&block)
+    Form.new(self,*config,&block)
   end
   class Form < Rwt::Component
     attr_accessor :url
@@ -45,79 +45,12 @@ module Rwt
       @authenticity_token= @config.delete(:authenticity_token)
       @config[:width]= 'auto' unless @config[:width]
       @config[:height]= 'auto' unless @config[:height]
-    end
-    
-    def submit
-#      function("Ext.getCmp('#{@config[:id]}').form.submit()")
-      function("#{jsObject}.form.submit()")
-    end
-    
-    def set_values(values)
-      case values
-      when Array # Array of field/values especifications passed
-        function("#{jsObject}.form.setValues(",values,");")
-      when ActiveRecord::Base # Model instance, try to populate fields in form with values from model
-        model_name= values.class.name.underscore.upcase.swapcase  # model name
-        form_values= []
-        puts @components
-        for field in @components do
-          begin
-            name= field_name(field)
-            puts 'name='+name
-            value= values.send(name)  # send to model object what is inside []
-            if value
-              value_s= value.to_s
-              if value_s != ''
-                form_values << {:id=>"#{model_name}[#{name}]",:value=>value_s}
-              end
-            end
-          rescue
-          end
-        end
-        return function("#{jsObject}.form.setValues(",form_values,");")
-      end
-    end
-    
-    def render
-#      listeners=@config.delete(:listeners) || {}
-#      listeners.merge!(:click=>@click) if @click
-#      @config.merge!(:listeners=>listeners)
-      if @components.length == 0
-        @components << {:fieldLabel=> 'Test Field',:name=> 'test', :xtype=>'textfield'}
-      end
-      @config.merge!(:url=>@url,:xtype=>'form',:items=>@components)
-      if @authenticity_token
-        @config.merge!(:baseParams=> {:authenticity_token=> @authenticity_token})
-      end
-      
-      # Standard actioncomplete (valid if not re-defined through config):
-      @config[:listeners]={} unless @config[:listeners]
-      @config[:listeners][:actioncomplete]=function(:form,:action,
-                              "if(action.type == 'submit'){",
-                                 "if(!action.result.message){",
-                                    "#{@owner.jsObject}.close();", # normally a window, should test?
-                                    "if (owner.ds){owner.ds.load()};", # normally a index grid
-                                 '}else{',
-                                    "App.message('Mensagem',action.result.message);",
-                                 "}",
-                               "}"
-            ) unless @config[:listeners][:actioncomplete]
-      
-      
-      
-      @config.render # Let Ext treat this
-    end
-    
-    private
-    def field_name(field_spec)
-      pat=/\[.*\]/
-      name= field_spec[:name] || field_spec[:hiddenName] || ''
-      if p= name =~ pat
-        name[p+1..-2]
-      else
-        name
-      end
-    end
+      @config[:frame]= true unless @config.has_key?(:frame)
+      @config[:defaultType]= 'textfield' unless @config[:defaultType]
+      @config[:bodyStyle]= 'padding:5px 5px 0' unless @config[:bodyStyle]
 
+      #      :bodyStyle=>'padding:5px 5px 0',
+    end
+    
   end 
 end

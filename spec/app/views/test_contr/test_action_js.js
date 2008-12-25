@@ -1,0 +1,2 @@
+alert('xxxx');
+alert('yyyy');

@@ -1,16 +1,38 @@
-Rwt is a framework that encapsulates the ExtJS javascript library and enables a new kind of templates where you use plain ruby code to program your application's visual interface.
+Rwt
+===
+
+Rwt is a Rails plugin that encapsulates the ExtJS javascript library and enables a
+new kind of templates where you can use plain ruby code to program your
+application's visual interface.
+
+Example
+=======
 
 Below the views directory you can create ruby files with code like this:
 
-window(:title=>'First Test') do |w|
-    w << button(:text=>'Displays a message') do |b|
-        b.on_click= message('Rwt will make your life easier!')
+window(:title=>'First Test') do
+  button(:text=>'Displays a message') do |b|
+    b.on_click do
+      message('Rwt will make your life easier!')
     end
-    w << button(:text=>'Creates a new window') do |b|
-        b.on_click= w.call_view('/test/window2')
-    end
-    w.show
+  end
+  button(:text=>'Creates a new window') do |b|
+    b.on_click {call_view('/test/window2')}
+  end
 end
 
 You can see a running example at http://www.accesstecnologia.com.br/rwt_test
 
+Installation
+============
+
+- Copy this plugin to your application:
+  $ cd myapp/vendor/plugins
+  $ git clone git://github.com/smbrant/rwt.git
+
+- Copy the ExtJs library in the ext subdirectory under public.
+  Get it from http://extjs.com
+
+
+
+Copyright (c) 2008 smbrant@gmail.com, released under the MIT license

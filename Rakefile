@@ -1,14 +1,22 @@
-# 
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
- 
-
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
-Rake::TestTask.new(:rwt_tests) do |t|
-   t.libs << "rwt"
-   t.test_files = FileList['test/**/test*.rb']
-   t.verbose = true
+desc 'Default: run unit tests.'
+task :default => :test
+
+desc 'Test the rwt plugin.'
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'lib'
+  t.pattern = 'test/**/*_test.rb'
+  t.verbose = true
+end
+
+desc 'Generate documentation for the rwt plugin.'
+Rake::RDocTask.new(:rdoc) do |rdoc|
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title    = 'Rwt'
+  rdoc.options << '--line-numbers' << '--inline-source'
+  rdoc.rdoc_files.include('README')
+  rdoc.rdoc_files.include('lib/**/*.rb')
 end
