@@ -21,7 +21,7 @@ window(:title=>'First Test') do
   end
 end
 
-You can see a running example at http://www.accesstecnologia.com.br/rwt_test
+More information at http://rwt.accesstecnologia.com.br
 
 Installation
 ============

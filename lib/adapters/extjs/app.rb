@@ -30,6 +30,8 @@ module Rwt
              });
            };
 
+           Rwt.getJs= getJs;
+
            Rwt.debug= function(text){
              if(!Rwt.debugWindow){
                  Rwt.debugWindow=new Ext.Window({title:'Rwt debug window',width:200,height:200,
