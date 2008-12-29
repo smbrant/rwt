@@ -5,7 +5,7 @@ module Rwt
       @config.merge!(:items=>@components) if @components.length > 0
 
       # Render extjs code
-      "var #{@config[:id]}=new Ext.Component(#{@config.render});"
+      "var #{@config[:v]}=new Ext.Component(#{@config.render});"
     end
   end
 end

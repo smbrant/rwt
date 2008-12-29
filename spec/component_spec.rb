@@ -33,7 +33,7 @@ describe Rwt::Component do
   it "should return component internal javascript id with to_s" do
     comp= component(:who=>'some_component')
     #    puts "#{comp}"
-    "#{comp}".should == comp.config[:id]
+    "#{comp}".should == comp.config[:v]
   end
 
   it "should have sons 'seeing' fathers in javascript" do
@@ -43,7 +43,7 @@ describe Rwt::Component do
       )
     end
 #    puts Rwt.code
-    Rwt.code.should include("function(){#{father.config[:id]}.close()}")
+    Rwt.code.should include("function(){#{father.config[:v]}.close()}")
   end
 
   it "should minify javascript" do
@@ -67,7 +67,7 @@ describe Rwt::Component do
 #    a=component(:who=>'a')
 #    1.upto(3) do |x|
 #      a.showxxx.met2('a','b').met3('1',x).semicolon  # automatically translated to javascript with semicolon at end
-#      Rwt.code.should include("#{a.config[:id]}.showxxx().met2('a','b').met3('1',#{x});")
+#      Rwt.code.should include("#{a.config[:v]}.showxxx().met2('a','b').met3('1',#{x});")
 #    end
 #    a.showyyy('1',2) # automatically translated without semicolon at end
 #    Rwt.js(";alert('x');") # explicit javascript inserted

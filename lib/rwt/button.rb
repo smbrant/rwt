@@ -26,7 +26,7 @@ module Rwt
   class Button<Rwt::Component
 
     def init_cmp
-      @config[:text]= @config[:id] unless @config[:text]
+      @config[:text]= @config[:v] unless @config[:text]
       @on_click= @config.delete(:on_click)
     end
 

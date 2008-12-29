@@ -5,11 +5,11 @@ module Rwt
       @config.merge!(:items=>@components) if @components.length > 0
 
       # Render extjs code
-      Rwt << "var #{@config[:id]}=new Ext.Component(#{@config.render});"
+      Rwt << "var #{@config[:v]}=new Ext.Component(#{@config.render});"
     end
 
     def generate_event(event,block)
-      Rwt << "#{@config[:id]}.on('#{event}',function(){"
+      Rwt << "#{@config[:v]}.on('#{event}',function(){"
       block.call
       Rwt << "});"
     end

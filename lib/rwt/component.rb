@@ -46,7 +46,7 @@ module Rwt
     Component.new(self, *config, &block) # self as owner
   end
   class Component
-    @@id= 0
+    @@vid= 0 # The var id, id of the corresponding javascript variable
     @@owners= [] # Stack of block owners (a component is 'owner' of his block of code,
                  # so that all components inside the block are owned by the component)
 
@@ -83,7 +83,7 @@ module Rwt
 
       init_default_par(non_hash)
 
-      @config[:id]= "v#{@@id+=1}" if !@config[:id]
+      @config[:v]= "v#{@@vid+=1}" if !@config[:v]
 
       @components= @config.delete(:components) || []
 
@@ -101,12 +101,12 @@ module Rwt
 
     end
 
-    def id
-      @config[:id]
+    def vid
+      @config[:v]
     end
 
     def render
-      @config[:id] # Just returns the javascript variable pointing to the object
+      @config[:v] # Just returns the javascript variable pointing to the object
     end
 
     def to_s

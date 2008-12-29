@@ -80,21 +80,6 @@ module Rwt
     load "adapters/#{@@config[:adapter]}/#{@@config[:adapter]}_adapter.rb"
   end
 
-# needed?
-# 
-#  #
-#  #  js
-#  #  ==
-#  #
-#  #  Minifies code and insert in buffer
-#  #
-#  def self.js(code_string)  # inserts minified string in buffer
-#    lines= code_string.split("\n")
-#    lines.each do |line|
-#      Rwt << line.gsub(/^\s+/,"").gsub(/\s+$/,"") # trimmed left and right
-#    end
-#  end
-
   #
   #  rwt_render
   #  ==========
@@ -120,26 +105,36 @@ module Rwt
   def rwt_render(config={})
     inline= config.delete(:inline)
     type= config.delete(:type) || 'rb'
+    register_as= config.delete(:register_as)
 
     if inline
       if type == 'rb'
         Rwt.clear
-        Rwt << "(function(owner){"  # Encapsulate in a function passing an owner
+        Rwt << "jsret=(function(owner){"  # Encapsulate in a function passing an owner
 
         ret=eval(inline)
 
-        Rwt << "})" # Close encapsulation function
+        Rwt << "});" # Close encapsulation function
 
         if ret.is_a?(Rwt::App)
           Rwt << "()"  # Imitiately executes
+        else
+          if register_as
+            Rwt << "jsret.id='#{register_as}';" # Register in Rwt
+          end
+          Rwt << "jsret;"
         end
 
         render :text=> Rwt.code
       else
         Rwt.clear
-        Rwt << "(function(owner){"
+        Rwt << "jsret=(function(owner){"
         Rwt << inline.gsub("'<%","<%").gsub("%>'","%>")
-        Rwt << "})"
+        Rwt << "});"
+        if register_as
+          Rwt << "jsret.id='#{register_as}';" # Register in Rwt
+        end
+        Rwt << "jsret;"
         render :text=> Rwt.code
       end
     else
@@ -150,14 +145,19 @@ module Rwt
       if File.exist?(template+'.rb')
         # If .rb found render javascript by evaluating the ruby code
         Rwt.clear
-        Rwt << "(function(owner){"  # Encapsulate in a function passing an owner
+        Rwt << "jsret=(function(owner){"  # Encapsulate in a function passing an owner
 
-        ret=eval(File.open(template+'.rb').read)
+        rbret=eval(File.open(template+'.rb').read)
 
-        Rwt << "})" # Close encapsulation function
+        Rwt << "});" # Close encapsulation function
 
-        if ret.is_a?(Rwt::App)
-          Rwt << "()"  # Imitiately executes
+        if rbret.is_a?(Rwt::App)
+          Rwt << "jsret();"  # Imitiately executes
+        else
+          if register_as
+            Rwt << "jsret.id='#{register_as}';" # Register in Rwt
+          end
+          Rwt << "jsret;"
         end
 
         render :text=> Rwt.code
@@ -167,9 +167,13 @@ module Rwt
         #  - single quotes are striped off
         #  - double quotes are passed as is
         Rwt.clear
-        Rwt << "(function(owner){"
+        Rwt << "jsret=(function(owner){"
         Rwt << render_to_string(:inline=> File.open(template+'.js').read.gsub("'<%","<%").gsub("%>'","%>") )
-        Rwt << "})"
+        Rwt << "});"
+        if register_as
+          Rwt << "jsret.id='#{register_as}';" # Register in Rwt
+        end
+        Rwt << "jsret;"
         render :text=> Rwt.code
       end
     end

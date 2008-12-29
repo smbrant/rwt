@@ -38,7 +38,7 @@ module Rwt
                                "}"
             ) unless @config[:listeners][:actioncomplete]
 
-      Rwt << "var #{@config[:id]}=new Ext.FormPanel(#{@config.render});"
+      Rwt << "var #{@config[:v]}=new Ext.FormPanel(#{@config.render});"
 
 #      # autosize with owner?
 #      if @owner && (@config[:width] == 'auto' || @config[:heigth] == 'auto')

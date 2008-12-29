@@ -73,7 +73,7 @@ module Rwt
     def init_cmp
       @x= @config.delete(:x) || Window.new_x
       @y= @config.delete(:y) || Window.new_y
-      @title= @config.delete(:title) || @config[:id]
+      @title= @config.delete(:title) || @config[:v]
       @visible= @config.delete(:visible) || true
     end
     

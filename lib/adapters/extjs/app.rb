@@ -1,9 +1,21 @@
 module Rwt
 
-  def call_view(url)
-    JS.new("getJs.createCallback('#{url}')")
+  def call_view(url,id=nil)
+    if id
+      JS.new("getJs.createCallback('#{url}','#{id}')")
+    else
+      JS.new("getJs.createCallback('#{url}')")
+    end
   end
   
+  def show_view(url,id=nil)
+    if id
+      Rwt << "getJs('#{url}','#{id}');"
+    else
+      Rwt << "getJs('#{url}');"
+    end
+  end
+
   class App < Rwt::Component
     def init_cmp
       Rwt << "
@@ -12,6 +24,7 @@ module Rwt
            Ext.QuickTips.init();
 
            Rwt={};
+           Rwt.register={};
            owner=Rwt;
 
            var errJs=function(response,options){
@@ -19,15 +32,21 @@ module Rwt
            };
 
            var exeJs=function(xhttp){
-             var ret=eval(xhttp.responseText+'(Rwt)');
+             var ret=eval(xhttp.responseText);
+             if(ret.id){Rwt.register[ret.id]=ret;}
+             ret(Rwt);
            };
 
-           var getJs=function(url){
-             Ext.Ajax.request({
-               url: url,
-               success: exeJs,
-               failure: errJs
-             });
+           var getJs=function(url,id){
+             if(Rwt.register[id]){
+               Rwt.register[id](Rwt)
+             }else{
+               Ext.Ajax.request({
+                 url: url,
+                 success: exeJs,
+                 failure: errJs
+               });
+             }
            };
 
            Rwt.getJs= getJs;

@@ -23,7 +23,13 @@ module Rwt
     App.new(*config,&block)
   end
 
-  def call_view(url)
+  #
+  #  call_view
+  #  =========
+  #
+  #  
+  #
+  def call_view(url,id=nil)
    "/* #{Rwt.adapter} adapter should generate code to call a view - fix it */"
   end
 
