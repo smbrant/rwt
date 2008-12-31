@@ -8,7 +8,7 @@ describe Form do
 
   it "should generate a form in the code buffer" do
     form
-    puts Rwt.code
+#    puts Rwt.code
     Rwt.code.should include("height:'auto'")
     Rwt.code.should include("listeners:{actioncomplete:function(form,action)")
   end
@@ -17,7 +17,7 @@ describe Form do
     form('/test') do |f|
       button(:handler=>f.submit)
     end
-    puts Rwt.code
+#    puts Rwt.code
   end
   
 end

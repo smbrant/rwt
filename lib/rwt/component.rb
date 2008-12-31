@@ -43,9 +43,10 @@ module Rwt
   #  end
   #
   def component(*config,&block)
-    Component.new(self, *config, &block) # self as owner
+    Component.new(*config, &block) # self as owner
   end
   class Component
+
     @@vid= 0 # The var id, id of the corresponding javascript variable
     @@owners= [] # Stack of block owners (a component is 'owner' of his block of code,
                  # so that all components inside the block are owned by the component)
@@ -65,6 +66,9 @@ module Rwt
     end
 
     def initialize(*config,&block)
+      @event={}         # Will store event procs, see 'on' method
+      @event_params={}  # Will store event parameters list
+      
       @owner= @@owners.last if @@owners.any? # If have a owner put me in the list of owned
       if @owner.is_a?(Component)
         @owner.components << self
@@ -116,6 +120,12 @@ module Rwt
     # Events:
     def on_create(&block)
       @on_create= block
+    end
+
+    # Other events:
+    def on(evt,*params,&block)
+      @event[evt]= block
+      @event_params[evt]= params
     end
 
     #

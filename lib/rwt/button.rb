@@ -8,16 +8,13 @@ module Rwt
   #  
   #  text -     Button caption, defaults to component id.
   #     
-  #  on_click - Function to be executed when the button is clicked.
-  #     
   #  Use
   #  ===
   #  
   #  window(:title=>'Test Window') do |w|
   #    w << button('button1') do |b|
-  #      b.on_click= message('button clicked!')
+  #      b.on('click'){ message('button clicked!')}
   #    end
-  #    w.show
   #  end
   #     
   def button(*config,&block)
@@ -27,13 +24,13 @@ module Rwt
 
     def init_cmp
       @config[:text]= @config[:v] unless @config[:text]
-      @on_click= @config.delete(:on_click)
+#      @on_click= @config.delete(:on_click)
     end
 
     # Events:
-    def on_click(&block)
-      @on_click= block
-    end
+#    def on_click(&block)
+#      @on_click= block
+#    end
 
   end 
 end

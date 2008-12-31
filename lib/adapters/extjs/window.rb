@@ -24,6 +24,8 @@ module Rwt
       Rwt <<   "}"
       Rwt << "};"
 
+      generate_default_events
+
       show if @visible
     end
 

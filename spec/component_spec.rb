@@ -27,7 +27,7 @@ describe Rwt::Component do
 #    puts Rwt.code
 #    puts a_gf.id
 
-    Rwt.code.should include("#{a_gf.id}.show()")
+    Rwt.code.should include("#{a_gf}.show()")
   end
 
   it "should return component internal javascript id with to_s" do
@@ -56,6 +56,15 @@ describe Rwt::Component do
       "
     Rwt.code.should include("alert('a');alert('b');alert('c');")
 #    puts Rwt.code
+  end
+
+  it "should generate on events" do
+    cmp=component('test') do |c|
+      c.on('show',:p1,:p2) do
+        Rwt << "alert('parameters: p1='+p1+', p2='+p2);"
+      end
+    end
+    Rwt.code.should include("#{cmp}.on('show',function(p1,p2){alert('parameters: p1='+p1+', p2='+p2);")
   end
 
 #disabled, a bit dangerous...

@@ -13,7 +13,7 @@ describe Toolbar do
         menu_item('xxx',"function(){alert('x')}")
       end
     end
-    puts Rwt.code
+#    puts Rwt.code
   end
 end
 

@@ -6,13 +6,15 @@ module Rwt
 #      @config.merge!(:listeners=>listeners) if listeners.length > 0
 
       Rwt << "var #{@config[:v]}=new Ext.Button(#{@config.render});"
-      generate_event('click',@on_click) if @on_click
+#      generate_event('click',@on_click) if @on_click
+
+      generate_default_events
 
     end
 
     def text=(value)
-      super
-      Rwt << "#{@config[:v]}.setText('#{value}');" if @created
+      @config[:text]=value
+      Rwt << "#{self}.setText('#{value}');"
     end
 
   end

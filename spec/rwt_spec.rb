@@ -80,11 +80,5 @@ describe Rwt do
 #
 #  end
 
-  it "should include a local file with component hierarchy" do
-    @teste='sssss'
-#    require File.join(File.dirname(__FILE__),'tx')
-    eval(File.open(File.join(File.dirname(__FILE__),'tx.rb')).read)
-#    Rwt.code.should include("new Ext.Component")
-  end
 end
 
