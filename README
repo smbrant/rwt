@@ -12,12 +12,12 @@ Below the views directory you can create ruby files with code like this:
 
 window(:title=>'First Test') do
   button(:text=>'Displays a message') do |b|
-    b.on_click do
+    b.on('click') do
       message('Rwt will make your life easier!')
     end
   end
   button(:text=>'Creates a new window') do |b|
-    b.on_click {call_view('/test/window2')}
+    b.on('click') {show_view('/test/window2')}
   end
 end
 
