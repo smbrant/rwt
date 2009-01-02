@@ -368,6 +368,7 @@ module Rwt
   require 'rwt/form'
   require 'rwt/field'
   require 'rwt/tabpanel'
+  require 'rwt/fieldset'
 
   # Load the default javascript adapter
   load_adapter

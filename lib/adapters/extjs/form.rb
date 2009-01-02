@@ -33,7 +33,7 @@ module Rwt
                                     "try{form.findParentByType('window').close()}catch(ex){}", # normally a window, should test?
                                     "if (owner.ds){owner.ds.load()};", # normally a index grid
                                  '}else{',
-                                    "App.message('Mensagem',action.result.message);",
+                                    "Rwt.message('Mensagem',action.result.message);",
                                  "}",
                                "}"
             ) unless @config[:listeners][:actioncomplete]

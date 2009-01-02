@@ -1,9 +1,8 @@
 module Rwt
-  class Field
+  class FieldSet
     def render_create
       @config.merge!(:items=>@components) if @components.length > 0
-#      Rwt << "var #{self}=#{@config.render};"
-      Rwt << "var #{self}=new Ext.form.Field(#{@config.render});"
+      Rwt << "var #{self}=new Ext.form.FieldSet(#{@config.render});"
       generate_default_events
     end
   end

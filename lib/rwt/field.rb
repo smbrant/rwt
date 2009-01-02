@@ -6,22 +6,6 @@ module Rwt
   #  Config parameters:
   #  ==================
   #  
-  #  fieldlabel
-  #  name
-  #  type (textfield,textarea,...
-  #     
-  #  on_click - Function to be executed when the button is clicked.
-  #     
-  #  Use
-  #  ===
-  #  
-  #  window(:title=>'Test Window') do |w|
-  #    w << button('button1') do |b|
-  #      b.on_click= message('button clicked!')
-  #    end
-  #    w.show
-  #  end
-  #     
   def field(*config,&block)
     Field.new(*config,&block)
   end
