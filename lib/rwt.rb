@@ -356,6 +356,76 @@ module Rwt
     Rwt << "Rwt.message('#{title}','#{message}');"
   end
 
+
+
+  #  The following code was copied from ext_scaffold:
+
+  #
+  #  Copyright (c) 2008 martin.rehfeld@glnetworks.de
+  #
+  #  Permission is hereby granted, free of charge, to any person obtaining
+  #  a copy of this software and associated documentation files (the
+  #  "Software"), to deal in the Software without restriction, including
+  #  without limitation the rights to use, copy, modify, merge, publish,
+  #  distribute, sublicense, and/or sell copies of the Software, and to
+  #  permit persons to whom the Software is furnished to do so, subject to
+  #  the following conditions:
+  #
+  #  The above copyright notice and this permission notice shall be
+  #  included in all copies or substantial portions of the Software.
+  #
+  #  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  #  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  #  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+  #  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+  #  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+  #  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+  #  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+  def update_pagination_state_with_params!(restraining_model = nil)
+    model_klass = (restraining_model.is_a?(Class) || restraining_model.nil? ? restraining_model : restraining_model.to_s.classify.constantize)
+    pagination_state = previous_pagination_state(model_klass)
+    pagination_state.merge!({
+      :sort_field => (params[:sort] || pagination_state[:sort_field] || 'id').sub(/(\A[^\[]*)\[([^\]]*)\]/,'\2'), # fields may be passed as "object[attr]"
+      :sort_direction => (params[:dir] || pagination_state[:sort_direction]).to_s.upcase,
+      :offset => (params[:start] || pagination_state[:offset] || 0).to_i,
+      :limit => (params[:limit] || pagination_state[:limit] || 9223372036854775807).to_i
+    })
+    # allow only valid sort_fields matching column names of the given model ...
+    unless model_klass.nil? || model_klass.column_names.include?(pagination_state[:sort_field])
+      pagination_state.delete(:sort_field)
+      pagination_state.delete(:sort_direction)
+    end
+    # ... and valid sort_directions
+    pagination_state.delete(:sort_direction) unless %w(ASC DESC).include?(pagination_state[:sort_direction])
+
+    save_pagination_state(pagination_state, model_klass)
+  end
+
+  def options_from_pagination_state(pagination_state)
+    find_options = { :offset => pagination_state[:offset],
+                     :limit  => pagination_state[:limit] }
+    find_options.merge!(
+      :order => "#{pagination_state[:sort_field]} #{pagination_state[:sort_direction]}"
+    ) unless pagination_state[:sort_field].blank?
+
+    find_options
+  end
+
+  private
+
+    # get pagination state from session
+    def previous_pagination_state(model_klass = nil)
+      session["#{model_klass.to_s.pluralize.underscore if model_klass}_pagination_state"] || {}
+    end
+
+    # save pagination state to session
+    def save_pagination_state(pagination_state, model_klass = nil)
+      session["#{model_klass.to_s.pluralize.underscore if model_klass}_pagination_state"] = pagination_state
+    end
+
+
+
   # Utilities and components:
   require 'rwt/util'
   require 'rwt/array'
@@ -370,6 +440,7 @@ module Rwt
   require 'rwt/tabpanel'
   require 'rwt/fieldset'
   require 'rwt/dbgrid'
+  require 'rwt/editform'
 
   # Load the default javascript adapter
   load_adapter

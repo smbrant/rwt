@@ -11,6 +11,7 @@ module Rwt
   #
   #   :model -
   #   :controller -
+  #   :authenticity_token -
   #   :pageSize -   number of records per page (defaults to 8)
   #   :filter -     defaults to true, enables/disables the filtering field
   #   :readOnly -   defaults to false, if true inhibit modifications
@@ -36,6 +37,7 @@ module Rwt
     def init_default_par(non_hash_params)
        @config[:model]=non_hash_params[0] if non_hash_params[0] #.is_a?(ActiveRecord::Base)
        @config[:controller]= non_hash_params[1] if non_hash_params[1] #.is_a?(ActionController::Base)
+       @config[:authenticity_token]= non_hash_params[2] if non_hash_params[2]
     end
 
     def init_cmp

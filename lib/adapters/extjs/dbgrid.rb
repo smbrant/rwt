@@ -1,7 +1,7 @@
 module Rwt
   class DbGrid
     def render_create
-      model_name= @model.name.underscore.upcase.swapcase
+      model_name= @model.name.underscore.downcase
       controller_name= @controller.controller_name
 
       fields_a= [{:name=> 'id', :mapping=> 'id'}]
@@ -28,7 +28,7 @@ module Rwt
       new_btn={
               :text=>'Novo...',
               :tooltip=>'Criar um novo registro',
-              :handler=>function(
+              :handler=>function("#{self.owner}.ds=ds;",
                           "getJs('/#{controller_name}/new?format=js');"
                         ),
               :iconCls=>'add'
@@ -39,6 +39,7 @@ module Rwt
               :handler=> function(
                            "var selected=#{self}.getSelectionModel().getSelected();",
                            'if(selected){',
+                              "#{self.owner}.ds=ds;",
                               "getJs('/#{controller_name}/edit/' + selected.data.id + '?format=js');",
                            '} else { ',
                              "Rwt.message('Mensagem','Selecione um registro, por favor.');",
@@ -62,8 +63,8 @@ module Rwt
                                                   ''
                                                 end,
                                               "},",
-                                      "success: function(response, options){ ds.load(); },",
-                                      "failure: function(response, options){ Rwt.message('Falhou.'); }",
+                                      "success: function(response, options){ds.load();},",
+                                      "failure: function(response, options){Rwt.message('Falhou.');}",
                                   "});",
                                '}',
                              '} else { ',
@@ -143,9 +144,14 @@ module Rwt
       ]
       end
 
+      if @read_only && !@show_edit_btn
+        get_dbl_click= "getJs('/#{controller_name}/show/'+#{self}.getStore().getAt(row).id+'.js')" # show
+      else
+        get_dbl_click= "getJs('/#{controller_name}/edit/'+#{self}.getStore().getAt(row).id+'.js')" # edit
+      end
 
       Rwt << "
-        ds=new Ext.data.Store({
+        var ds=new Ext.data.Store({
              proxy:new Ext.data.HttpProxy({
                      url:'/#{controller_name}/index?format=json&id=#{@id}#{json_params}&fields=#{fields_json}',
                      method: 'GET'
@@ -161,7 +167,6 @@ module Rwt
            });
         cm=new Ext.grid.ColumnModel(#{fields_b.render});
 
-        #{self}=null;
         #{self}=new Ext.grid.GridPanel({
           ds:ds,
           cm:cm,
@@ -171,30 +176,19 @@ module Rwt
           autoHeight:true,
           stripeRows:true,
           viewConfig:{forceFit:true},
-          tbar:#{tbar.render}
+          tbar:#{tbar.render},
+          listeners:{afterlayout:function(){alert('show do grid');#{self.owner}.ds=ds;}}
         });
+
+        #{self}.on('rowdblclick',function(grid,row,e){#{self.owner}.ds=ds;#{get_dbl_click};});
+
+        ds.load({params: {start: 0, limit:#{@page_size}}});
       "
+
     end
   end
 end
 
-#        if @read_only && !@show_edit_btn
-#          grid.on({
-#              :rowdblclick=>function(:grid,:row,:e,
-##                  "App.lastDs=#{ds};",
-#                  "getJs('/#{controller_name}/show/'+grid.getStore().getAt(row).id+'.js')" # show
-#                )
-#            })
-#        else
-#          grid.on({
-#              :rowdblclick=>function(:grid,:row,:e,
-##                  "App.lastDs=#{ds};",
-#                  "getJs('/#{controller_name}/edit/'+grid.getStore().getAt(row).id+'.js')" # edit
-#                )
-#            })
-#        end,
-#
-#        "#{ds}.load({params: {start: 0, limit:#{@page_size}}})",
 #
 #        thread=var('null'),
 #
