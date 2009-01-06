@@ -26,20 +26,20 @@ module Rwt
       if @owner.class == Toolbar     # inside a toolbar whe should use tbtext
         @config.merge!(:xtype=>'tbtext')
       end
-      Rwt << "var #{@config[:v]}=#{@config.render};"
+      Rwt << "var #{self}=#{@config.render};"
     end
   end
 
   class Menu < Component
     def render_create
-      Rwt << "var #{@config[:v]}=#{@config.merge(:menu=>@components).render};"
+      Rwt << "var #{self}=#{@config.merge(:menu=>@components).render};"
     end
   end
 
   class MenuItem < Component
     def render_create
       @config.merge!(:items=>@components) if @components.length > 0
-      Rwt << "var #{@config[:v]}=#{@config.render};"
+      Rwt << "var #{self}=#{@config.render};"
     end
   end
 

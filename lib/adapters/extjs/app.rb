@@ -7,7 +7,7 @@ module Rwt
       JS.new("getJs.createCallback('#{url}')")
     end
   end
-  
+
   def show_view(url,id=nil)
     if id
       Rwt << "getJs('#{url}','#{id}');"
