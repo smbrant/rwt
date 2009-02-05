@@ -1,5 +1,8 @@
 module Rwt
 
+  #
+  # call_view should be use in menu_item
+  #
   def call_view(url,id=nil)
     if id
       JS.new("getJs.createCallback('#{url}','#{id}')")
@@ -8,6 +11,17 @@ module Rwt
     end
   end
 
+  #
+  # show_view should be used in the following pattern:
+  #
+  # button('test') do |b|
+  #   b.on('click') do
+  #     show_view('/x/y/z')
+  #   end
+  # end
+  #
+  #TODO: call_view should be changed to this pattern (after fixing other parts)
+  #
   def show_view(url,id=nil)
     if id
       Rwt << "getJs('#{url}','#{id}');"

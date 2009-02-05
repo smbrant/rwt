@@ -7,6 +7,7 @@ module Rwt
   #  =================
   #  
   #  url - submit url
+  #  authenticity_token - rails authenticity_token (if in use)
   #     
   #  Use
   #  ===

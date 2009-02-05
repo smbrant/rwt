@@ -5,7 +5,7 @@ module Rwt
 #      listeners.merge!(:click=>@on_click) if @on_click
 #      @config.merge!(:listeners=>listeners) if listeners.length > 0
 
-      Rwt << "var #{@config[:v]}=new Ext.Button(#{@config.render});"
+      Rwt << "var #{self}=new Ext.Button(#{@config.render});"
 #      generate_event('click',@on_click) if @on_click
 
       generate_default_events

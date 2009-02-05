@@ -40,6 +40,12 @@ module Rwt
     def render_create
       @config.merge!(:items=>@components) if @components.length > 0
       Rwt << "var #{self}=#{@config.render};"
+
+      #TODO: render as new Ext.menu.Item and generate events (to use the same pattern of other components)
+#      generate_default_events
+
+
+
     end
   end
 
