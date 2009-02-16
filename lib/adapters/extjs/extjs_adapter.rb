@@ -24,7 +24,9 @@ html_code
       def rwt_body
         "<body scroll='no'>"+
           if !File.directory?(File.join(RAILS_ROOT,'public','ext'))
-            "<p>You should copy or link the extjs library to the <b>/public/ext</b> subdirectory."
+            "<p><b>Error while trying to load the ExtJs library</b></p>"+
+            "<p>You should copy or link the extjs library to the <b>/public/ext</b> subdirectory.</p>"+
+            "<p>If you prefer you could use <b>rake rwt:install_extjs</b> instead.</p>"
           else
             ""
           end
