@@ -1,5 +1,5 @@
 module Rwt
-  class Button < Component
+  class Button < Rwt::Component
     def render_create
 #      listeners=@config.delete(:listeners) || {}
 #      listeners.merge!(:click=>@on_click) if @on_click

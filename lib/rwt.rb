@@ -2,7 +2,7 @@
 #  Rails Web Toolkit
 #  =================
 #  
-#  Rwt is a visual web framework built on top of various javascript libraries.
+#  Rwt is a visual web framework built on top of javascript libraries.
 # 
 #  The Rwt module should be included in the application controller or 
 #  installed using the rwt plugin.
@@ -16,7 +16,7 @@
 #  v. 1.0, smb, Jun 02 2008
 #    Initial version, lots of changes during 2008.
 #
-#  v. 2.0, smb, Dec 06 2002
+#  v. 2.0, smb, Dec 06 2008
 #    First re-write, changed the way render is done in order to ease coding programs
 #    and not only creating objects from config parameters.
 #    More than one javascript library can be plugged-in. Initially ExtJs and Dojo.
@@ -24,7 +24,7 @@
 module Rwt
   # Configuration
   @@config={:adapter=>'extjs',  # Javascript adapter
-            :minify=>true}     # Do not minify generated code (not good yet)
+            :minify=>true}      # Minify generated code?
 
   def self.adapter
     @@config[:adapter]
@@ -43,7 +43,7 @@ module Rwt
   #
   @@code_buffer= "" # The code buffer. Components should insert javascript here
 
-  def self.clear  # Normally the code is cleared at each rwt_render
+  def self.clear  # Normally the code is cleared after each rwt_render
     @@code_buffer= ""
   end
 
@@ -101,6 +101,18 @@ module Rwt
   #  That is to say, in your javascript views you should use '<% .... %>' or
   #  "<% .... %>" when you want erb substitution. This way you don't harm the
   #  javascript syntax. "<% ... %>" sequences are passed without modification.
+  #  
+  #  Parameters:
+  #  ===========
+  #  
+  #  inline: instead of using a view, use this string as template
+  #  
+  #  register_as: register this render with this name, so that the next time
+  #               the client requests this action the local registered version 
+  #               will be used (instead of requesting it again).
+  #
+  #TODO: investigate the possibility of implementing 'cached' instead of 'register_as' and use the url as the key to register
+  #  cached: if the view is to be cached in client
   #
   def rwt_render(config={})
     inline= config.delete(:inline)
@@ -179,9 +191,9 @@ module Rwt
     end
   end
 
-  def get_scope
-    binding
-  end
+#  def get_scope
+#    binding
+#  end
 
   #
   #  rwt_load
@@ -193,7 +205,10 @@ module Rwt
   #  ===
   #  
   #  myHash= rwt_load('hash_values.rb')
-  #  
+  #
+  #  or
+  #  myHash= rwt_load('hash_values')
+  #
   #  x= myHash[:mykey]
   #  ...
   #
@@ -212,7 +227,7 @@ module Rwt
   #  Prepares a response to a post request, in the case of no errors
   #  found in the controller
   #  
-  #  Use (in the controller)
+  #  Use (in a controller)
   #  ===
   #  
   #  def update
@@ -295,7 +310,7 @@ module Rwt
       when ActiveRecord::Base
         msg= ''
         base.errors.each do |key,errors|
-          if base.class.respond_to?('titles')
+          if base.class.respond_to?('titles') # Enable i18n, define @@titles in model
             key_title= base.class.titles[key.to_sym] || base.class.titles[key] || key.humanize
           else
             key_title= key.humanize
@@ -318,7 +333,7 @@ module Rwt
   #  in the controller (app/views/controllerName/actionName.js)
   #  No templating is done.
   #  
-  #  Use (in controller)
+  #  Use (in controller, deprecated)
   #  ===
   #  
   #  ...
@@ -341,6 +356,8 @@ module Rwt
   #
   #  Minifies a javascript file and inserts in rwt buffer after processing it as an erb.
   #
+  #  (similar to rwt_load in rb views, but for js views)
+  #
   def js_load(file)
     filename=file
     if !filename.include?('.js')
@@ -352,13 +369,19 @@ module Rwt
     Rwt << render_to_string(:inline=>js_erb)
   end
 
+  #
+  #  message
+  #  =======
+  #
+  #  Sends a message, using the Rwt.message javascript defined in the client application.
+  #
   def message(message,title='Message')
     Rwt << "Rwt.message('#{title}','#{message}');"
   end
 
 
 
-  #  The following code was copied from ext_scaffold:
+  #  The following code was copied from ext_scaffold, with small changes.
 
   #
   #  Copyright (c) 2008 martin.rehfeld@glnetworks.de

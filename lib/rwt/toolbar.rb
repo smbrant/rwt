@@ -62,7 +62,7 @@ module Rwt
   def text(*config,&block)
     Text.new(*config,&block)
   end
-  class Text < Component
+  class Text < Rwt::Component
     def render_create
       "/* #{Rwt.adapter} adapter should create a text here - fix it */"
     end
@@ -71,7 +71,7 @@ module Rwt
   def menu(*config,&block)
     Menu.new(*config,&block)
   end
-  class Menu < Component
+  class Menu < Rwt::Component
     def render_create
       "/* #{Rwt.adapter} adapter should create a menu here - fix it */"
     end
@@ -89,7 +89,7 @@ module Rwt
   def menu_item(*config,&block)
     MenuItem.new(*config,&block)
   end
-  class MenuItem < Component
+  class MenuItem < Rwt::Component
     def init_default_par(non_hash_params)
        @config[:text]=non_hash_params[0] if non_hash_params[0].class == String
        @config[:handler]= non_hash_params[1] if non_hash_params[1]

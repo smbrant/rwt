@@ -22,4 +22,3 @@ describe DbGrid do
     puts Rwt.code
   end
 end
-
