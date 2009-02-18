@@ -77,7 +77,7 @@ module Rwt
   #
   def self.load_adapter(config={})
     @@config.merge!(config)
-    load "adapters/#{@@config[:adapter]}/#{@@config[:adapter]}_adapter.rb"
+    load "adapters/#{@@config[:adapter]}/adapter.rb"
   end
 
   #
@@ -464,6 +464,8 @@ module Rwt
   require 'rwt/fieldset'
   require 'rwt/dbgrid'
   require 'rwt/editform'
+  require 'rwt/panel'
+  require 'rwt/htmleditor'
 
   # Load the default javascript adapter
   load_adapter
