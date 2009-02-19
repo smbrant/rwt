@@ -466,6 +466,7 @@ module Rwt
   require 'rwt/editform'
   require 'rwt/panel'
   require 'rwt/htmleditor'
+  require 'rwt/container'
 
   # Load the default javascript adapter
   load_adapter
