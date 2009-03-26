@@ -1,0 +1,11 @@
+en:
+  rwt:
+    adapter:
+      should_generate_code: "/* &raquo; adapter should generate code to call a view - fix it */"
+    error:
+      loading:
+        extjs: |
+          <p><b>Error while trying to load the ExtJs library</b></p>
+          <p>You should copy or link the extjs library to the <b>/public/ext</b> subdirectory.</p>
+          <p>If you prefer you could use <b>rake rwt:install_extjs</b> instead.</p>
+

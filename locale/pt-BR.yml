@@ -1,0 +1,10 @@
+pt-BR:
+  rwt:
+    adapter:
+      should_generate_code: "/* O adaptador &raquo; deve gerar código para chamar a vista - conserte isto! */"
+    error:
+      loading:
+        extjs: |
+          <p><b>Erro na tentativa de carregar a biblioteca ExtJs</b></p>
+          <p>Você deve copiar ou linkar a biblioteca ExtJs para o sub-diretório <b>/public/ext</b>.</p>
+          <p>Se v. preferir pode usar <b>rake rwt:install_extjs</b> no lugar.</p>
