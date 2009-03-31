@@ -26,33 +26,33 @@ module Rwt
       params= @authenticity_token!="" ? "params:{authenticity_token:'#{@authenticity_token}'}" : ""
 
       new_btn={
-              :text=>'Novo...',
-              :tooltip=>'Criar um novo registro',
+              :text=>t(:'rwt.button.new.text'),
+              :tooltip=>t(:'rwt.button.new.tooltip'),
               :handler=>function("#{self.owner}.ds=ds;",
                           "getJs('/#{controller_name}/new?format=js');"
                         ),
               :iconCls=>'add'
               }
       edit_btn={
-              :text=>'Editar...',
-              :tooltip=>'Editar o registro selecionado',
+              :text=>t(:'rwt.button.edit.text'),
+              :tooltip=>t(:'rwt.button.edit.tooltip'),
               :handler=> function(
                            "var selected=#{self}.getSelectionModel().getSelected();",
                            'if(selected){',
                               "#{self.owner}.ds=ds;",
                               "getJs('/#{controller_name}/edit/' + selected.data.id + '?format=js');",
                            '} else { ',
-                             "Rwt.message('Mensagem','Selecione um registro, por favor.');",
+                             "Rwt.message('",t(:'rwt.message'),"','",t(:'rwt.warning.select_record'),"');",
                            '}'
                          )
               }
       delete_btn={
-                :text=>'Apagar...',
-                :tooltip=>'Apagar o registro selecionado',
+                :text=>t(:'rwt.button.delete.text'),
+                :tooltip=>t(:'rwt.button.delete.tooltip'),
                 :handler=> function(
                              "var selected = #{self}.getSelectionModel().getSelected();",
                              'if(selected){',
-                               "if(confirm('Tem certeza?')){",
+                               "if(confirm('",t(:'rwt.question.are_you_sure'),"')){",
                                   'var conn = new Ext.data.Connection();',
                                   'conn.request({',
                                       "url:'/#{controller_name}/destroy/'+selected.data.id",
@@ -68,7 +68,7 @@ module Rwt
                                   "});",
                                '}',
                              '} else { ',
-                               "Rwt.message('Mensagem','Selecione um registro, por favor.');",
+                               "Rwt.message('",t(:'rwt.message'),"','",t(:'rwt.warning.select_record'),"');",
                              '}'
                            ),
                 :iconCls=>'remove'
@@ -76,7 +76,8 @@ module Rwt
 
       adv_search_btn={:xtype=>'button',
                   :width=>50,
-                  :text=>'Pesquisa Avançada',
+                  :text=>t(:'rwt.button.adv_search.text'),
+                  :tooltip=>t(:'rwt.button.adv_search.tooltip'),
 #                  :handler=>call_view(@adv_search_view)
                   :handler=>js("getJs.createCallback('#{@adv_search_view}')")
                 }
