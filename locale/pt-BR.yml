@@ -1,7 +1,7 @@
 pt-BR:
   rwt:
     adapter:
-      should_generate_code: "/* O adaptador &raquo; deve gerar código para chamar a vista - conserte isto! */"
+      should_generate_code: "/* O adaptador {{adapter}} deve gerar código para chamar a vista - conserte isto! */"
     error:
       loading:
         extjs: |

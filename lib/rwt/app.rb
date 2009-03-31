@@ -30,7 +30,7 @@ module Rwt
   #  
   #
   def call_view(url,id=nil)
-    t('rwt.adapter.should_generate_code', "#{Rwt.adapter}" )
+    t(:'rwt.adapter.should_generate_code', :adapter=>Rwt.adapter )
   end
 
   class App < Rwt::Component
