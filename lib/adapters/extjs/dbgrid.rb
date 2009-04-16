@@ -46,8 +46,10 @@ module Rwt
                            '}'
                          )
               }
+      delete_txt= t(:'rwt.button.delete.text')
+      puts "delete_txt="+delete_txt
       delete_btn={
-                :text=>t(:'rwt.button.delete.text'),
+                :text=>delete_txt,
                 :tooltip=>t(:'rwt.button.delete.tooltip'),
                 :handler=> function(
                              "var selected = #{self}.getSelectionModel().getSelected();",
@@ -118,8 +120,8 @@ module Rwt
           end,
           if @print
             {
-          :text=>'Imprimir...',
-          :tooltip=>'Imprimir o registro selecionado',
+          :text=>t(:'rwt.button.print.text'),
+          :tooltip=>t(:'rwt.button.print.tooltip'),
           :handler=> function(
                        "var selected = #{self}.getSelectionModel().getSelected();",
                        'if(selected){',
@@ -185,7 +187,6 @@ module Rwt
 
         ds.load({params: {start: 0, limit:#{@page_size}}});
       "
-
     end
   end
 end

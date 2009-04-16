@@ -8,3 +8,24 @@ pt-BR:
           <p><b>Erro na tentativa de carregar a biblioteca ExtJs</b></p>
           <p>Você deve copiar ou linkar a biblioteca ExtJs para o sub-diretório <b>/public/ext</b>.</p>
           <p>Se v. preferir pode usar <b>rake rwt:install_extjs</b> no lugar.</p>
+    warning:
+      select_record: Selecione um registro, por favor.
+    question:
+      are_you_sure: Você tem certeza?
+    message: Mensagem
+    button:
+      new:
+        text: Novo...
+        tooltip: Criar um novo registro
+      edit:
+        text: Editar...
+        tooltip: Editar o registro selecionado
+      delete:
+        text: Apagar...
+        tooltip: Apagar o registro selecionado
+      adv_search:
+        text: Pesquisa avançada...
+        tooltip: Pesquisar registros especificando filtragens
+      print:
+        text: Imprimir...
+        tooltip: Imprimir o registro selecionado

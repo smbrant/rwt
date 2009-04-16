@@ -30,6 +30,10 @@ module Rwt
     end
   end
 
+  def show_html(url)
+    Rwt << "window.location='#{url}';"
+  end
+
   class App < Rwt::Component
     def init_cmp
       Rwt << "
