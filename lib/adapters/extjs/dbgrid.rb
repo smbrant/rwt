@@ -24,37 +24,36 @@ module Rwt
       fields_json=fields_json.join(',')
 
       params= @authenticity_token!="" ? "params:{authenticity_token:'#{@authenticity_token}'}" : ""
-
       new_btn={
-              :text=>t(:'rwt.button.new.text'),
-              :tooltip=>t(:'rwt.button.new.tooltip'),
+              :text=>I18n.t('rwt.button.new.text'),
+              :tooltip=>I18n.t('rwt.button.new.tooltip'),
               :handler=>function("#{self.owner}.ds=ds;",
                           "getJs('/#{controller_name}/new?format=js');"
                         ),
               :iconCls=>'add'
               }
       edit_btn={
-              :text=>t(:'rwt.button.edit.text'),
-              :tooltip=>t(:'rwt.button.edit.tooltip'),
+              :text=>I18n.t('rwt.button.edit.text'),
+              :tooltip=>I18n.t('rwt.button.edit.tooltip'),
               :handler=> function(
                            "var selected=#{self}.getSelectionModel().getSelected();",
                            'if(selected){',
                               "#{self.owner}.ds=ds;",
                               "getJs('/#{controller_name}/edit/' + selected.data.id + '?format=js');",
                            '} else { ',
-                             "Rwt.message('",t(:'rwt.message'),"','",t(:'rwt.warning.select_record'),"');",
+                             "Rwt.message('",I18n.t('rwt.message'),"','",I18n.t('rwt.warning.select_record'),"');",
                            '}'
                          )
               }
-      delete_txt= t(:'rwt.button.delete.text')
+      delete_txt= I18n.t('rwt.button.delete.text')
       puts "delete_txt="+delete_txt
       delete_btn={
                 :text=>delete_txt,
-                :tooltip=>t(:'rwt.button.delete.tooltip'),
+                :tooltip=>I18n.t('rwt.button.delete.tooltip'),
                 :handler=> function(
                              "var selected = #{self}.getSelectionModel().getSelected();",
                              'if(selected){',
-                               "if(confirm('",t(:'rwt.question.are_you_sure'),"')){",
+                               "if(confirm('",I18n.t('rwt.question.are_you_sure'),"')){",
                                   'var conn = new Ext.data.Connection();',
                                   'conn.request({',
                                       "url:'/#{controller_name}/destroy/'+selected.data.id",
@@ -70,7 +69,7 @@ module Rwt
                                   "});",
                                '}',
                              '} else { ',
-                               "Rwt.message('",t(:'rwt.message'),"','",t(:'rwt.warning.select_record'),"');",
+                               "Rwt.message('",I18n.t('rwt.message'),"','",I18n.t('rwt.warning.select_record'),"');",
                              '}'
                            ),
                 :iconCls=>'remove'
@@ -78,8 +77,8 @@ module Rwt
 
       adv_search_btn={:xtype=>'button',
                   :width=>50,
-                  :text=>t(:'rwt.button.adv_search.text'),
-                  :tooltip=>t(:'rwt.button.adv_search.tooltip'),
+                  :text=>I18n.t('rwt.button.adv_search.text'),
+                  :tooltip=>I18n.t('rwt.button.adv_search.tooltip'),
 #                  :handler=>call_view(@adv_search_view)
                   :handler=>js("getJs.createCallback('#{@adv_search_view}')")
                 }
@@ -120,8 +119,8 @@ module Rwt
           end,
           if @print
             {
-          :text=>t(:'rwt.button.print.text'),
-          :tooltip=>t(:'rwt.button.print.tooltip'),
+          :text=>I18n.t('rwt.button.print.text'),
+          :tooltip=>I18n.t('rwt.button.print.tooltip'),
           :handler=> function(
                        "var selected = #{self}.getSelectionModel().getSelected();",
                        'if(selected){',

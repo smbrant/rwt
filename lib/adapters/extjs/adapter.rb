@@ -24,7 +24,7 @@ html_code
       def rwt_body
         "<body scroll='no'>"+
           if !File.directory?(File.join(RAILS_ROOT,'public','ext'))
-            t('rwt.error.loading.extjs')
+            I18n.t('rwt.error.loading.extjs')
           else
             ""
           end

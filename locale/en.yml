@@ -1,5 +1,6 @@
 en:
   rwt:
+    test: rwt test
     adapter:
       should_generate_code: "/* {{adapter}} adapter should generate code to call a view - fix it */"
     error:

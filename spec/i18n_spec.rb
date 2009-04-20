@@ -9,7 +9,7 @@ describe I18n do
   end
 
   it "should translate" do
-    t(:'rwt.adapter.should_generate_code',:adapter=>'test').should include("/* test adapter should generate code to call a view - fix it */")
+    I18n.t('rwt.adapter.should_generate_code',:adapter=>'test').should include("/* test adapter should generate code to call a view - fix it */")
   end
 end
 
