@@ -4,8 +4,9 @@ module Rwt
       # Include components as items in extjs component
       @config.merge!(:items=>@components) if @components.length > 0
 
-      # Render extjs code
-      "var #{@config[:v]}=new Ext.Component(#{@config.render});"
+      # Render dojo code
+      "dojo code for component to be done..."
+#      "var #{@config[:v]}=new Ext.Component(#{@config.render});"
     end
   end
 end

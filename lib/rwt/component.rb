@@ -7,7 +7,7 @@ module Rwt
   #  The basic Rwt component.
   #
   #  A component have a representation in ruby and a corresponding representation
-  #  in javascript that is constructed during during the instantiation of the
+  #  in javascript that is constructed during the instantiation of the
   #  ruby object. The javascript code is added to the code buffer.
   #
   #  The javascript code can be completed with code generated after object instantiation
@@ -34,7 +34,7 @@ module Rwt
   #
   #  component(:config_par1=>value1,....) do
   #    config_par2= 'Test'
-  #    component(....) do
+  #    component(....) do         # first son
   #      property1= 'value'
   #    end
   #    1.upto(3) do |x|
@@ -63,6 +63,7 @@ module Rwt
 
     def init_cmp
       # If necessary, override in derived component
+      # Called by initialize after @config and @components initialization
     end
 
     def initialize(*config,&block)
@@ -100,7 +101,7 @@ module Rwt
 #        instance_eval(&block)
       end
 
-      render_create # Generates the creation of component
+        render_create # Generates the creation of component
 #      instance_eval(&@on_create) if @on_create # Generates the on_create event
 
     end
@@ -118,9 +119,9 @@ module Rwt
     end
 
     # Events:
-    def on_create(&block)
-      @on_create= block
-    end
+#    def on_create(&block)
+#      @on_create= block
+#    end
 
     # Other events:
     def on(evt,*params,&block)

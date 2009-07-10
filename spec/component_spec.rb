@@ -18,14 +18,15 @@ describe Rwt::Component do
         f.owner.config[:text].should == 'grandfather'
         component('son') do |s|
           s.owner.config[:text].should == 'father'
-          s.on_create do
+          s.on("create") do
             Rwt << "#{gf}.show();"
+#            gf.show()  # remember this mode later. Why did I quit with this?
           end
         end
       end
     end
 #    puts Rwt.code
-#    puts a_gf.id
+#    puts a_gf.vid
 
     Rwt.code.should include("#{a_gf}.show()")
   end
