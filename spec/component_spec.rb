@@ -7,36 +7,91 @@ describe Rwt::Component do
   end
 
   it "should generate javascript in the buffer" do
-    component(:test=>'test')
-#    puts Rwt.code
-    Rwt.code.should include("test:'test'")
+    component(:a_parameter=>'a_value')
+    Rwt.code.should include("v:") # all components has a unique identification stored in the 'v' parameter
+    Rwt.code.should include("a_parameter:'a_value'")
+#   puts Rwt.code
   end
 
-  it "should be able to construct a hierachy of components" do
+  it "should accept the :text parameter as the first non keyed value" do
+    component('First Component')
+    Rwt.code.should include("text:'First Component'")
+    component(:a_parameter=>'a_value',:text=>'Second Component') # can use keyed form too
+    Rwt.code.should include("text:'Second Component'")
+#   puts Rwt.code
+  end
+
+  it "should ignore non-treated non-hashed parameters" do
+    component('first','second','third')
+    Rwt.code.should include("text:'first'")
+    Rwt.code.should_not include("second")
+    Rwt.code.should_not include("third")
+#   puts Rwt.code
+  end
+
+  it "should pass non-treated hashed parameters 'as-is' to javascript" do
+    component(:first=>'first',:second=>'second',:third=>'third')
+    Rwt.code.should include("first:'first'")
+    Rwt.code.should include("second:'second'")
+    Rwt.code.should include("third:'third'")
+#   puts Rwt.code
+  end
+
+  it "should accept code blocks and interpret then as hierachies of components" do
+    component('father') do
+      component('son1') do
+        component('grandson1')
+      end
+      component('son2')
+    end
+#   puts Rwt.code
+  end
+
+  it "should be able to construct a hierachy of components and reference block variables" do
     a_gf=component('grandfather') do |gf| # gf here only needed because of reference in son
       component('father') do |f|
         f.owner.config[:text].should == 'grandfather'
         component('son') do |s|
           s.owner.config[:text].should == 'father'
-          s.on("create") do
-            Rwt << "#{gf}.show();"
-#            gf.show()  # remember this mode later. Why did I quit with this?
-          end
         end
       end
     end
-#    puts Rwt.code
-#    puts a_gf.vid
-
-    Rwt.code.should include("#{a_gf}.show()")
   end
 
-  it "should return component internal javascript id with to_s" do
+  it "should return component internal id with to_s" do
     comp= component(:who=>'some_component')
-    #    puts "#{comp}"
     "#{comp}".should == comp.config[:v]
+    comp.should.to_s == comp.config[:v]
   end
 
+  # accessors:
+  #  attr_reader :components  # owned components
+  #  attr_reader :config      # configuration hash
+  #  attr_reader :owner       # owner of component
+
+  it "should give access to components, config and owner accessors" do
+    component('one') do |one|
+      c2= component('two') do |two|
+        two.owner.should == one
+      end
+      c3= component('tree') do |tree|
+        tree.owner.should == one
+      end
+      one.components[0].should == c2
+      one.components[1].should == c3
+      c2.config[:text].should == 'two'
+      c3.config[:text].should == 'tree'
+    end
+  end
+
+  it "can inject javascript directly in the buffer" do
+    comp=component('A component')
+    Rwt << "alert(#{comp}.text);"
+#    puts Rwt.code
+    Rwt.code.should include("alert(#{comp}.text);")
+  end
+
+  # Mixing ruby and javascript (necessary in some cases...)
   it "should have sons 'seeing' fathers in javascript" do
     father=component(:who=>'father') do |f|
       component(:who=>'son',
@@ -44,8 +99,57 @@ describe Rwt::Component do
       )
     end
 #    puts Rwt.code
-    Rwt.code.should include("function(){#{father.config[:v]}.close()}")
+    Rwt.code.should include("function(){#{father}.close()}")
   end
+
+  # Events in ruby stores code blocks that generates javascript code during the rendering...
+  it "should process the 'on' method call as event definition" do
+    c1=component('one') do |one|
+      one.on('close') do
+        Rwt << "alert('closing...');"
+      end
+    end
+#    puts Rwt.code
+    Rwt.code.should include("#{c1}.on('close',function(){alert('closing...')")
+  end
+
+  it "should accept events with parameters" do
+    c1=component('one') do |one|
+      one.on('close',:first_par,:second_par) do
+        Rwt << "alert('closing...'+first_par+second_par);"
+      end
+    end
+#    puts Rwt.code
+    Rwt.code.should include("#{c1}.on('close',function(first_par,second_par){alert('closing...'+first_par+second_par)")
+  end
+
+  # Missing methods in ruby are passed 'as is' to javascript (crazy!)
+  #
+  it "should pass missing methods 'as is' to javascript" do
+    component('one') do |one|
+      one.on('close') do
+        one.method1
+        one.method2(:par1=>'val1',:par2=>'val2')
+      end
+    end
+#    puts Rwt.code
+  end
+
+  # So, you can do things like this:
+  it "should be able to generate abitrary method calls in javascript" do
+    w='a window to be created'
+    b='a button to be created inside a window'
+    w=component('window') do |window|
+      b=component('button') do |button|
+        button.on('click') do
+          window.close
+        end
+      end
+    end
+#    puts Rwt.code
+    Rwt.code.should include("#{b}.on('click',function(){#{w}.close();")
+  end
+
 
   it "should minify javascript" do
     Rwt.clear
@@ -59,30 +163,18 @@ describe Rwt::Component do
 #    puts Rwt.code
   end
 
-  it "should generate on events" do
-    cmp=component('test') do |c|
-      c.on('show',:p1,:p2) do
-        Rwt << "alert('parameters: p1='+p1+', p2='+p2);"
+  # A window with tree closing buttons...
+  it "should be scriptable" do
+    component('a window') do |w|
+      1.upto(3) do |n|
+        component("button#{n}") do |button|
+          button.on('click') do
+            w.close
+          end
+        end
       end
     end
-    Rwt.code.should include("#{cmp}.on('show',function(p1,p2){alert('parameters: p1='+p1+', p2='+p2);")
+#    puts Rwt.code
   end
-
-#disabled, a bit dangerous...
-#
-#  it "should be scriptable" do
-#    1.upto(3) do |x|
-#      component(:who=>"cp#{x}")
-#    end
-#    a=component(:who=>'a')
-#    1.upto(3) do |x|
-#      a.showxxx.met2('a','b').met3('1',x).semicolon  # automatically translated to javascript with semicolon at end
-#      Rwt.code.should include("#{a.config[:v]}.showxxx().met2('a','b').met3('1',#{x});")
-#    end
-#    a.showyyy('1',2) # automatically translated without semicolon at end
-#    Rwt.js(";alert('x');") # explicit javascript inserted
-#    Rwt.code.should include(";alert('x');")
-##    puts Rwt.code
-#  end
 
 end

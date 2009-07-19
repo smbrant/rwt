@@ -26,6 +26,13 @@ module Rwt
   #  Any parameter not recognized by Rwt components are forwarded directly to
   #  the corresponding javascript component (and normally use the camelCase syntax).
   #
+  #  Config parameters:
+  #  ==================
+  #
+  #    text - a string text associated with the component
+  #
+  #    can be passed as :text=>value or just value as the first parameter
+  #
   #  Use
   #  ===
   #
@@ -116,6 +123,12 @@ module Rwt
 
     def to_s
       render # the same as render to ease interpolation in function() or js()
+    end
+
+    # Transforms unexpected ruby method calls in correspondent javascript method calls
+    def method_missing(*args,&block)
+      m= args.shift
+      Rwt << js(self,".#{m.to_s}(",fill_array(args),')').render + ';'
     end
 
     # Events:
