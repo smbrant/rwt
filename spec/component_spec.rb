@@ -3,7 +3,7 @@ include Rwt
 
 describe Rwt::Component do
   before(:each) do
-    Rwt.clear
+    Rwt.clear # clear the javascript buffer
   end
 
   it "should generate javascript in the buffer" do
@@ -38,11 +38,16 @@ describe Rwt::Component do
   end
 
   it "should accept code blocks and interpret then as hierachies of components" do
-    component('father') do
-      component('son1') do
-        component('grandson1')
+    component('father') do |father|
+      component('son1') do |son|
+        son.owner.should == father
+        component('grandson1') do |grandson|
+          grandson.owner.should == son
+        end
       end
-      component('son2')
+      component('son2') do |son|
+        son.owner.should == father
+      end
     end
 #   puts Rwt.code
   end
