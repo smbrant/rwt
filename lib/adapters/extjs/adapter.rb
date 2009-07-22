@@ -11,12 +11,12 @@ module ActionView
   module Helpers
     module JavaScriptHelper
       # pt_BR
-      def rwt_javascript_libraries(language='en')
+      def rwt_javascript_libraries(language='en') # ext-3.0.0
 <<html_code
 <link rel="stylesheet" type="text/css" href="/ext/resources/css/ext-all.css" />
 <script type="text/javascript" src="/ext/adapter/ext/ext-base.js"></script>
 <script type="text/javascript" src="/ext/ext-all.js"></script>
-<script type="text/javascript" src="/ext/source/locale/ext-lang-#{language}.js"></script>
+<script type="text/javascript" src="/ext/src/locale/ext-lang-#{language}.js"></script>
 html_code
 #<script type="text/javascript" src="/javascripts/html_editor_fix.js"></script>
       end

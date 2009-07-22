@@ -379,7 +379,16 @@ module Rwt
     Rwt << "Rwt.message('#{title}','#{message}');"
   end
 
-
+  #
+  # Returns json corresponding to active record data
+  #
+  def rwt_json(data)
+    result={}
+    data.attributes.each  do |key,value|
+      result["#{data.class.model_name.downcase}[#{key}]"]=value
+    end
+    return result
+  end
 
   #  The following code was copied from ext_scaffold, with small changes.
 
