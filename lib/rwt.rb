@@ -21,6 +21,9 @@
 #    and not only creating objects from config parameters.
 #    More than one javascript library can be plugged-in. Initially ExtJs and Dojo.
 #
+
+Mime::Type.register "application/rwt", :rwt
+
 module Rwt
   # Configuration
   @@config={:adapter=>'extjs',  # Javascript adapter
