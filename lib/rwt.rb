@@ -7,7 +7,7 @@
 #  The Rwt module should be included in the application controller or 
 #  installed using the rwt plugin.
 #
-#  Authors: smbrant@gmail.com,
+#  Authors: smbrant,
 #
 #  Documentation: http://rwt.accesstecnologia.com.br
 #
@@ -132,10 +132,10 @@ module Rwt
         Rwt << "});" # Close encapsulation function
 
         if ret.is_a?(Rwt::App)
-          Rwt << "()"  # Imitiately executes
+          Rwt << "()"  # Immediately executes
         else
           if register_as
-            Rwt << "jsret.id='#{register_as}';" # Register in Rwt
+            Rwt << "jsret.id='#{register_as}';" # Register in client Rwt environment for re-use
           end
           Rwt << "jsret;"
         end
@@ -386,9 +386,21 @@ module Rwt
   # Returns json corresponding to active record data
   #
   def rwt_json(data)
-    result={}
-    data.attributes.each  do |key,value|
-      result["#{data.class.model_name.downcase}[#{key}]"]=value
+    if data.class == Array # An array of records
+      result=[]
+      data.each do |record|
+        r={}
+        record.attributes.each  do |key,value| # sending all attributes # TODO: send selected attributes
+#          r["#{record.class.model_name.downcase}[#{key}]"]=value
+          r["#{key}"]=value
+        end
+        result << r
+      end
+    else  # A single record
+      result={}
+      data.attributes.each  do |key,value|
+        result["#{data.class.model_name.downcase}[#{key}]"]=value
+      end
     end
     return result
   end
