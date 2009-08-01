@@ -21,7 +21,7 @@ window(:title=>'First Test') do
   end
 end
 
-More information at http://rwt.accesstecnologia.com.br
+More information at http://rwt.access.srv.br
 
 Installation
 ============
@@ -33,6 +33,8 @@ Installation
 - Copy the ExtJs library in the ext subdirectory under public.
   Get it from http://extjs.com
 
+- You can download complete example application from http://github.com/smbrant/rwt_home
+  (live at http://rwt.access.srv.br)
 
 
 Copyright (c) 2008 smbrant, released under the MIT license

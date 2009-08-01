@@ -1,5 +1,5 @@
 #
-#  Rwt - (c) accesstecnologia.com.br
+#  Rwt - (c) access.srv.br
 #
 #  Array, with render capabilities for the equivalent javascript
 #  Basic javascript generator for hash dictionaries
