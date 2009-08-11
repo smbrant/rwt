@@ -9,7 +9,7 @@
 #
 #  Authors: smbrant,
 #
-#  Documentation: http://rwt.accesstecnologia.com.br
+#  Documentation: http://rwt.access.srv.br
 #
 #  Revisions:
 #

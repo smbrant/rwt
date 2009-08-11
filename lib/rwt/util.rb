@@ -1,5 +1,5 @@
 #
-#  Rwt - Copyright (c) 2008 accesstecnologia.com.br
+#  Rwt - Copyright (c) 2008 access.srv.br
 #
 #  Utilities
 #
