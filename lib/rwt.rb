@@ -383,7 +383,7 @@ module Rwt
   end
 
   #
-  # Returns json corresponding to active record data
+  # Returns json corresponding to activerecord data
   #
   def rwt_json(data)
     if data.class == Array # An array of records
