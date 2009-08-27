@@ -22,7 +22,7 @@
 #    More than one javascript library can be plugged-in. Initially ExtJs and Dojo.
 #
 
-Mime::Type.register "application/rwt", :rwt
+#Mime::Type.register "application/rwt", :rwt
 
 module Rwt
   # Configuration
