@@ -5,6 +5,7 @@ require "i18n"
 
 describe I18n do
   before(:each) do
+#    I18n.load_path += Dir[File.dirname(__FILE__) + '/../locale/**/*.yml']
     I18n.locale= :en
   end
 
