@@ -105,11 +105,9 @@ module Rwt
         @@owners.push(self)
         yield self
         @@owners.pop
-#        instance_eval(&block)
       end
 
-        render_create # Generates the creation of component
-#      instance_eval(&@on_create) if @on_create # Generates the on_create event
+      render_create # Generates the creation of component
 
     end
 
@@ -131,12 +129,7 @@ module Rwt
       Rwt << js(self,".#{m.to_s}(",fill_array(args),')').render + ';'
     end
 
-    # Events:
-#    def on_create(&block)
-#      @on_create= block
-#    end
-
-    # Other events:
+    # Events: store in @event array for late rendering (by adapter)
     def on(evt,*params,&block)
       @event[evt]= block
       @event_params[evt]= params
@@ -154,18 +147,6 @@ module Rwt
     end
 
   end
-
-#  # Interface to Component:
-#  def component(*config,&block)
-#    Component.new(self, *config, &block)
-#
-#    c=Component.new(self,*config) # Create a new component passing me (whoever I am) as ower
-#    if block_given?
-#      c.instance_eval(&block)
-#    end
-#    c.render_create
-#    instance_eval(c.on_create) if c.on_create
-#  end
 
 end
 

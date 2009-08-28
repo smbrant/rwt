@@ -18,10 +18,6 @@ module Rwt
     end
 
     def generate_default_events
-      # The rwt on_create event
-#      @on_create.call if @on_create
-
-      # The other extjs events:
       @event.each do |evt,block|
         Rwt << "#{self}.on('#{evt}',function("
         Rwt << @event_params[evt].join(',')
