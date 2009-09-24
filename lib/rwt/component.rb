@@ -99,7 +99,7 @@ module Rwt
 
       @components= @config.delete(:components) || []
 
-      init_cmp
+      init_cmp # Things to be done before block processing...
 
       if block_given?
         @@owners.push(self)
@@ -107,7 +107,7 @@ module Rwt
         @@owners.pop
       end
 
-      render_create # Generates the creation of component
+      render_create # Generates the creation of component in javascript
 
     end
 
