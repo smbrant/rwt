@@ -8,7 +8,7 @@ module Rwt
       Rwt << "var #{self}=new Ext.Button(#{@config.render});"
 #      generate_event('click',@on_click) if @on_click
 
-      generate_default_events
+      generate_events
 
     end
 

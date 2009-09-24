@@ -7,17 +7,11 @@ module Rwt
       # Render extjs code
       Rwt << "var #{self}=new Ext.Component(#{@config.render});"
 
-      generate_default_events
+      generate_events
 
     end
 
-    def generate_event(event,block)
-      Rwt << "#{self}.on('#{event}',function(){"
-      block.call
-      Rwt << "});"
-    end
-
-    def generate_default_events
+    def generate_events
       @event.each do |evt,block|
         Rwt << "#{self}.on('#{evt}',function("
         Rwt << @event_params[evt].join(',')

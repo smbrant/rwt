@@ -4,7 +4,7 @@ module Rwt
       @config.merge!(:items=>@components) if @components.length > 0
 
       Rwt << "var #{self}=new Ext.TabPanel(#{@config.render});"
-      generate_default_events
+      generate_events
     end
 
   end

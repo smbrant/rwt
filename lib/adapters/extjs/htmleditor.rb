@@ -3,7 +3,7 @@ module Rwt
     def render_create
       @config.merge!(:items=>@components) if @components.length > 0
       Rwt << "var #{self}=new Ext.form.HtmlEditor(#{@config.render});"
-      generate_default_events
+      generate_events
     end
 
   end

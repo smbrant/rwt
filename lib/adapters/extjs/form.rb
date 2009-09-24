@@ -40,7 +40,7 @@ module Rwt
 
       Rwt << "var #{self}=new Ext.FormPanel(#{@config.render});"
 
-      generate_default_events
+      generate_events
 
 #      # autosize with owner?
 #      if @owner && (@config[:width] == 'auto' || @config[:heigth] == 'auto')

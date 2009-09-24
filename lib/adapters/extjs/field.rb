@@ -21,7 +21,7 @@ module Rwt
 #      Rwt << "var #{self}=#{@config.render};"
 #      Rwt << "var #{self}=new Ext.form.Field(#{@config.render});"
       Rwt << "var #{self}=new Ext.form.#{FIELDTYPE[@config[:xtype]]}(#{@config.render});"
-      generate_default_events
+      generate_events
     end
   end
 end
