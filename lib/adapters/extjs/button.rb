@@ -4,6 +4,8 @@ module Rwt
 #      listeners=@config.delete(:listeners) || {}
 #      listeners.merge!(:click=>@on_click) if @on_click
 #      @config.merge!(:listeners=>listeners) if listeners.length > 0
+      auto_width= @config.delete(:autoWidth) || true
+      @config.merge!(:autoWidth=>auto_width)
 
       Rwt << "var #{self}=new Ext.Button(#{@config.render});"
 #      generate_event('click',@on_click) if @on_click
