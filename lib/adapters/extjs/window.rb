@@ -4,6 +4,12 @@ module Rwt
       @config.merge!(:items=>@components) if @components.length > 0
       @config.merge!(:title=>@title,:x=>@x,:y=>@y)
 
+      @components.each do |component|
+        if component.class == DbGrid
+          @config.merge!(:bbar=>js("new Ext.PagingToolbar({pageSize: #{component.config[:page_size]},store: ds})"))
+        end
+      end
+
       Rwt << "var #{self}=new Ext.Window(#{@config.render});"
 
       # Overrides exeJs and getJs passing this window as owner

@@ -46,7 +46,7 @@ module Rwt
                          )
               }
       delete_txt= I18n.t('rwt.button.delete.text')
-      puts "delete_txt="+delete_txt
+#      puts "delete_txt="+delete_txt
       delete_btn={
                 :text=>delete_txt,
                 :tooltip=>I18n.t('rwt.button.delete.tooltip'),
@@ -143,7 +143,7 @@ module Rwt
           else
             {}
           end
-      ]
+          ]
       end
 
       if @read_only && !@show_edit_btn
@@ -152,16 +152,18 @@ module Rwt
         get_dbl_click= "getJs('/#{controller_name}/edit/'+#{self}.getStore().getAt(row).id+'.js')" # edit
       end
 
+#                      root:'#{model_name}',
+
       Rwt << "
         var ds=new Ext.data.Store({
              proxy:new Ext.data.HttpProxy({
-                     url:'/#{controller_name}/index?format=json&id=#{@id}#{json_params}&fields=#{fields_json}',
+                     url:'/#{controller_name}?format=json&id=#{@id}#{json_params}&fields=#{fields_json}',
                      method: 'GET'
                    }),
              reader:new Ext.data.JsonReader({
-                      root:'#{model_name}',
+                      root:'rows',
                       id: 'id',
-                      totalProperty: 'results'
+                      totalProperty: 'count'
                     },
                     #{fields_a.render}),
              remoteSort:true,
@@ -179,6 +181,7 @@ module Rwt
           stripeRows:true,
           viewConfig:{forceFit:true},
           tbar:#{tbar.render},
+
           listeners:{afterlayout:function(){alert('show do grid');#{self.owner}.ds=ds;}}
         });
 
@@ -189,66 +192,3 @@ module Rwt
     end
   end
 end
-
-#
-#        thread=var('null'),
-#
-#        search_field=var(),
-#
-#        do_search=var(function(
-#            "if(#{thread}){clearInterval(#{thread})}",
-#            "#{ds}.proxy.conn.url='/#{controller_name}/index?format=json&fields=#{fields_json.join(',')}&filter='+#{search_field}.getValue();",
-#            "#{ds}.reload();"
-#          )),
-#
-#        search_field.object=Ext::Form::TextField.new(
-#                    :width=>@width-10,
-#                    :enableKeyEvents=>true,
-#                    :listeners=>{
-#                         :keyup=>function(:f,:e,
-#                            "if(#{thread}){clearInterval(#{thread})}",
-#                            "#{thread}=setInterval(#{do_search},1000);"
-#                            )
-#                        }
-#                    ),
-#        control_panel= var({
-#            :xtype=>'panel',
-#            :border=>false,
-##            :layout=>'column',
-#            :items=>[
-#               {:width=>@width-10,
-#                :border=>false,
-#                :items=>[search_field]
-#                }
-#             ]
-#          }),
-#
-#        win=var(Ext::Window.new({
-#            :x=> @x,
-#            :y=> @y,
-#            :width=> @width,
-#            :height=> @height,
-#            :title=> @title,
-#            :items=>  if @filter
-#                        [control_panel,grid]
-#                      else
-#                        [grid]
-#                      end,
-#            :show=>false,
-#            :bbar=> Ext::PagingToolbar.new({
-#                      :pageSize=> @page_size,
-#                      :store=> ds,
-#                      :displayInfo=> true,
-#                      :displayMsg=> 'Registros {0} - {1} de {2}',
-#                      :emptyMsg=> "Nenhum registro encontrado"
-#              })
-#            })
-#          ),
-#        "#{win}.ds=#{ds}",
-#        pass_owner(win),
-#        win.show(),
-#
-#        # focus on search field:
-#        "#{search_field}.focus.defer(150,#{search_field})"
-#
-#      ).render

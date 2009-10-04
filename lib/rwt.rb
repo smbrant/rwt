@@ -386,7 +386,7 @@ module Rwt
   # Returns json corresponding to activerecord data
   #
   def rwt_json(data)
-    if data.class == Array # An array of records
+#    if data.class == Array # An array of records
       result=[]
       data.each do |record|
         r={}
@@ -396,12 +396,12 @@ module Rwt
         end
         result << r
       end
-    else  # A single record
-      result={}
-      data.attributes.each  do |key,value|
-        result["#{data.class.model_name.downcase}[#{key}]"]=value
-      end
-    end
+#    else  # A single record
+#      result={}
+#      data.attributes.each  do |key,value|
+#        result["#{data.class.model_name.downcase}[#{key}]"]=value
+#      end
+#    end
     return result
   end
 

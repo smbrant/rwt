@@ -12,7 +12,7 @@ module Rwt
   #   :model -
   #   :controller -
   #   :authenticity_token -
-  #   :pageSize -   number of records per page (defaults to 8)
+  #   :page_size -   number of records per page (defaults to 10)
   #   :filter -     defaults to true, enables/disables the filtering field
   #   :readOnly -   defaults to false, if true inhibit modifications
   #   :show_new_btn - true/false, force to show/hide new button
@@ -43,17 +43,18 @@ module Rwt
     def init_cmp
       @model= @config[:model] || nil
       puts @model
+      @config[:page_size]=10 unless @config[:page_size]
       @controller= @config[:controller] || nil
       @title= @config[:title] || ''
       @authenticity_token= @config[:authenticity_token] ||''
-      @width= @config[:width] || 500
-      @height= @config[:height] || 300
+      @width= @config[:width] || owner.config[:width]-10 || 500
+      @height= @config[:height] || owner.config[:height]-10 || 300
       @hideId= if @config.key?(:hideId)
                   @config[:hideId]
                 else
                   true
                 end
-      @page_size= @config[:pageSize] || 8
+      @page_size= @config[:page_size]
       @filter= if @config.key?(:filter)
                   @config[:filter]
                 else
