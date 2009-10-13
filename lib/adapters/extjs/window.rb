@@ -5,7 +5,7 @@ module Rwt
       @config.merge!(:title=>@title,:x=>@x,:y=>@y)
 
       @components.each do |component|
-        if component.class == DbGrid
+        if component.class == DbGrid # Include a paging toolbar if there is a dbgrid inside the window
           @config.merge!(:bbar=>js("new Ext.PagingToolbar({pageSize: #{component.config[:page_size]},store: ds})"))
         end
       end

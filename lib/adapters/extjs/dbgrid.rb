@@ -28,7 +28,7 @@ module Rwt
               :text=>I18n.t('rwt.button.new.text'),
               :tooltip=>I18n.t('rwt.button.new.tooltip'),
               :handler=>function("#{self.owner}.ds=ds;",
-                          "getJs('/#{controller_name}/new?format=js');"
+                          "getJs('/#{controller_name}/new.rwt');"
                         ),
               :iconCls=>'add'
               }
@@ -39,7 +39,7 @@ module Rwt
                            "var selected=#{self}.getSelectionModel().getSelected();",
                            'if(selected){',
                               "#{self.owner}.ds=ds;",
-                              "getJs('/#{controller_name}/edit/' + selected.data.id + '?format=js');",
+                              "getJs('/#{controller_name}/' + selected.data.id + '/edit.rwt');",
                            '} else { ',
                              "Rwt.message('",I18n.t('rwt.message'),"','",I18n.t('rwt.warning.select_record'),"');",
                            '}'
@@ -147,9 +147,9 @@ module Rwt
       end
 
       if @read_only && !@show_edit_btn
-        get_dbl_click= "getJs('/#{controller_name}/show/'+#{self}.getStore().getAt(row).id+'.js')" # show
+        get_dbl_click= "getJs('/#{controller_name}/'+#{self}.getStore().getAt(row).id+'.rwt')" # show
       else
-        get_dbl_click= "getJs('/#{controller_name}/edit/'+#{self}.getStore().getAt(row).id+'.js')" # edit
+        get_dbl_click= "getJs('/#{controller_name}/'+#{self}.getStore().getAt(row).id+'/edit.rwt')" # edit
       end
 
 #                      root:'#{model_name}',
