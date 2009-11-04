@@ -47,13 +47,11 @@ class RwtScaffoldGenerator < Rails::Generator::NamedBase
 
       for action in scaffold_views
         m.template(
-          "view_#{action}.html.erb",
-          File.join('app/views', controller_class_path, controller_file_name, "#{action}.html.erb")
+          "view_#{action}.rb",
+          File.join('app/views', controller_class_path, controller_file_name, "#{action}.rb")
         )
       end
 
-      # Layout
-      m.template('layout.html.erb', File.join('app/views/layouts', controller_class_path, "#{controller_file_name}.html.erb"))
       
       m.dependency 'model', [name] + @args, :collision => :skip
 
@@ -84,7 +82,7 @@ class RwtScaffoldGenerator < Rails::Generator::NamedBase
     end
 
     def scaffold_views
-      %w[ index show new edit _form_items ]
+      %w[ index show new edit ]
     end
 
     def model_name

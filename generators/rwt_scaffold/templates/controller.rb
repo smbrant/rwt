@@ -10,6 +10,7 @@ class <%= controller_class_name %>Controller < ApplicationController
         @page= <%= class_name %>.find(:all, :limit => params[:limit], :offset => params[:start])
         rwt_ok(:rows=>rwt_json(@page),:count=><%= class_name %>.count)
       end
+    end
   end
 
   # GET /<%= table_name %>/1.xml
