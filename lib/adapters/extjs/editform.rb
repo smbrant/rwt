@@ -15,10 +15,13 @@ module Rwt
         end
       end
 
+      puts @id
       if @id
-        url="/#{controller_name}/update/#{@id}?format=js"
+        url="/#{controller_name}/#{@id}.rwt" # with PUT
+        meth='PUT'
       else
-        url="/#{controller_name}/create"
+        url="/#{controller_name}.rwt" # with POST
+        meth='POST'
       end
 
       Rwt << "
@@ -36,7 +39,7 @@ module Rwt
           items:#{@components.render},
           buttons:[{text:'Salvar',
                     type:'submit',
-                    handler:function(){#{self}.form.submit()},
+                    handler:function(){#{self}.form.submit({method:'#{meth}'})},
                    },
                    {text:'Fechar',
                     handler:function(){#{self.owner}.close()}

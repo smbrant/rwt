@@ -56,8 +56,8 @@ module Rwt
                                "if(confirm('",I18n.t('rwt.question.are_you_sure'),"')){",
                                   'var conn = new Ext.data.Connection();',
                                   'conn.request({',
-                                      "url:'/#{controller_name}/destroy/'+selected.data.id",
-                                      ",params: {", # _method: 'DELETE',",
+                                      "url:'/#{controller_name}/'+selected.data.id+'.rwt'",
+                                      ",params: { _method: 'DELETE',",
                                                 if @authenticity_token != ''
                                                   "authenticity_token: '#{@authenticity_token}'"
                                                 else
