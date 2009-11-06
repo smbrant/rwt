@@ -1,0 +1,21 @@
+Description:
+    Creates an rwt application. An rwt application is an initial page that
+    creates the environment to execute and show the 'views' to
+    be sent to the browser/client by the rails application/server.
+    This initial page will tipically show a menu to start the various 'views'
+    of the rwt application.
+
+    Pass the name of the controller, either CamelCased or under_scored, as the first
+    argument,
+
+
+Prerequisites:
+		You need to download the Ext Javascript framework from
+
+		`http://extjs.com/download`,
+
+		and unzip it into `#{RAILS_ROOT}/public/ext`. Rwt_application was
+		tested against version 3.0.0 of the Ext framework.
+
+Examples:
+    `./script/generate rwt_application desktop`

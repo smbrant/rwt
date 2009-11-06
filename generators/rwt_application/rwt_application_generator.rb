@@ -1,4 +1,4 @@
-class RwtScaffoldGenerator < Rails::Generator::NamedBase
+class RwtApplicationGenerator < Rails::Generator::NamedBase
 
   default_options :skip_timestamps => false, :skip_migration => false
 
@@ -17,7 +17,7 @@ class RwtScaffoldGenerator < Rails::Generator::NamedBase
   def initialize(runtime_args, runtime_options = {})
     super
 
-    @controller_name = @name.pluralize
+    @controller_name = @name
 
     base_name, @controller_class_path, @controller_file_path, @controller_class_nesting, @controller_class_nesting_depth = extract_modules(@controller_name)
     @controller_class_name_without_nesting, @controller_underscore_name, @controller_plural_name = inflect_names(base_name)
@@ -69,23 +69,16 @@ class RwtScaffoldGenerator < Rails::Generator::NamedBase
   protected
     # Override with your own usage banner.
     def banner
-      "Usage: #{$0} rwt_scaffold ModelName [field:type, field:type]"
+      "Usage: #{$0} rwt_application ControllerName"
     end
 
-    def add_options!(opt)
-      opt.separator ''
-      opt.separator 'Options:'
-      opt.on("--skip-timestamps",
-             "Don't add timestamps to the migration file for this model") { |v| options[:skip_timestamps] = v }
-      opt.on("--skip-migration",
-             "Don't generate a migration file for this model") { |v| options[:skip_migration] = v }
-    end
+#    def add_options!(opt)
+#      opt.separator ''
+#      opt.separator 'Options:'
+#      opt.on("--skip-timestamps",
+#             "Don't add timestamps to the migration file for this model") { |v| options[:skip_timestamps] = v }
+#      opt.on("--skip-migration",
+#             "Don't generate a migration file for this model") { |v| options[:skip_migration] = v }
+#    end
 
-    def scaffold_views
-      %w[ index show new edit ]
-    end
-
-    def model_name
-      class_name.demodulize
-    end
 end
