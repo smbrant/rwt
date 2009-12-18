@@ -182,7 +182,7 @@ module Rwt
           viewConfig:{forceFit:true},
           tbar:#{tbar.render},
 
-          listeners:{afterlayout:function(){alert('show do grid');#{self.owner}.ds=ds;}}
+          listeners:{afterlayout:function(){#{self.owner}.ds=ds;}}
         });
 
         #{self}.on('rowdblclick',function(grid,row,e){#{self.owner}.ds=ds;#{get_dbl_click};});
