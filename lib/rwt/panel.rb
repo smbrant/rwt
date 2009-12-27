@@ -12,6 +12,9 @@ module Rwt
   end
   
   class Panel<Rwt::Component
+    def init_default_par(non_hash_params)
+       @config[:title]=non_hash_params[0] if non_hash_params[0].class == String
+    end
   end 
 end
 
