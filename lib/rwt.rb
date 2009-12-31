@@ -491,6 +491,8 @@ module Rwt
   require 'rwt/panel'
   require 'rwt/htmleditor'
   require 'rwt/container'
+  require 'rwt/data'
+  require 'rwt/jsonstore'
 
   # Load the default javascript adapter
   load_adapter
