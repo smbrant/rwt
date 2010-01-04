@@ -9,7 +9,7 @@
 #
 #  Authors: smbrant,
 #
-#  Documentation: http://rwt.access.srv.br
+#  Documentation: http://www.access.net.br
 #
 #  Revisions:
 #
@@ -120,12 +120,12 @@ module Rwt
   def rwt_render(config={})
     inline= config.delete(:inline)
     type= config.delete(:type) || 'rb'
-    register_as= config.delete(:register_as)
+    register_as= config.delete(:register_as) || params[:register_as]
 
     if inline
       if type == 'rb'
         Rwt.clear
-        Rwt << "jsret=(function(owner){"  # Encapsulate in a function passing an owner
+        Rwt << "jsret=(function(owner,url){"  # Encapsulate in a function passing an owner
 
         ret=eval(inline)
 
@@ -135,7 +135,7 @@ module Rwt
           Rwt << "()"  # Immediately executes
         else
           if register_as
-            Rwt << "jsret.id='#{register_as}';" # Register in client Rwt environment for re-use
+            Rwt << "jsret.cache_id='#{register_as}';" # Register in client Rwt environment for re-use
           end
           Rwt << "jsret;"
         end
@@ -143,34 +143,36 @@ module Rwt
         render :text=> Rwt.code
       else
         Rwt.clear
-        Rwt << "jsret=(function(owner){"
+        Rwt << "jsret=(function(owner,url){"
         Rwt << inline.gsub("'<%","<%").gsub("%>'","%>")
         Rwt << "});"
         if register_as
-          Rwt << "jsret.id='#{register_as}';" # Register in Rwt
+          Rwt << "jsret.cache_id='#{register_as}';" # Register in Rwt
         end
         Rwt << "jsret;"
         render :text=> Rwt.code
       end
     else
-
       # Try to find a rwt template
       template=File.join(RAILS_ROOT,'app','views',params[:controller],params[:action])
 
       if File.exist?(template+'.rb')
         # If .rb found render javascript by evaluating the ruby code
         Rwt.clear
-        Rwt << "jsret=(function(owner){"  # Encapsulate in a function passing an owner
+        Rwt << "jsret=(function(owner,url){"  # Encapsulate in a function passing an owner
 
         rbret=eval(File.open(template+'.rb').read)
 
         Rwt << "});" # Close encapsulation function
 
+        request_path=request.env["REQUEST_PATH"]
+        Rwt << "jsret.url='#{request_path}';"
+
         if rbret.is_a?(Rwt::App)
           Rwt << "jsret();"  # Imitiately executes
         else
           if register_as
-            Rwt << "jsret.id='#{register_as}';" # Register in Rwt
+            Rwt << "jsret.cache_id='#{register_as}';" # Register in Rwt
           end
           Rwt << "jsret;"
         end
@@ -182,11 +184,15 @@ module Rwt
         #  - single quotes are striped off
         #  - double quotes are passed as is
         Rwt.clear
-        Rwt << "jsret=(function(owner){"
+        Rwt << "jsret=(function(owner,url){"
         Rwt << render_to_string(:inline=> File.open(template+'.js').read.gsub("'<%","<%").gsub("%>'","%>") )
         Rwt << "});"
+
+        request_path=request.env["REQUEST_PATH"]
+        Rwt << "jsret.url='#{request_path}';"
+
         if register_as
-          Rwt << "jsret.id='#{register_as}';" # Register in Rwt
+          Rwt << "jsret.cache_id='#{register_as}';" # Register in Rwt
         end
         Rwt << "jsret;"
         render :text=> Rwt.code
@@ -493,6 +499,7 @@ module Rwt
   require 'rwt/container'
   require 'rwt/data'
   require 'rwt/jsonstore'
+  require 'rwt/grid'
 
   # Load the default javascript adapter
   load_adapter

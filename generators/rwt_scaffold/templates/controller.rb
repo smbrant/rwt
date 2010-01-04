@@ -2,24 +2,27 @@ class <%= controller_class_name %>Controller < ApplicationController
 
   # GET /<%= table_name %>.xml
   # GET /<%= table_name %>.rwt
+  # GET /<%= table_name %>.json
   def index
     respond_to do |format|
       format.xml  { render :xml => <%= class_name %>.find(:all) }
       format.rwt  { rwt_render }
       format.json do
         @page= <%= class_name %>.find(:all, :limit => params[:limit], :offset => params[:start])
-        rwt_ok(:rows=>rwt_json(@page),:count=><%= class_name %>.count)
+        rwt_ok(:<%= file_name %>=>rwt_json(@page),:count=><%= class_name %>.count)
       end
     end
   end
 
   # GET /<%= table_name %>/1.xml
   # GET /<%= table_name %>/1.rwt
+  # GET /<%= table_name %>/1.json
   def show
     @<%= file_name %> = <%= class_name %>.find(params[:id])
     respond_to do |format|
       format.xml  { render :xml => @<%= file_name %> }
       format.rwt { rwt_render }
+      format.json { rwt_ok(:<%= file_name %>=>rwt_json(@<%= file_name %>))}
     end
   end
 
@@ -34,30 +37,32 @@ class <%= controller_class_name %>Controller < ApplicationController
   end
 
   # GET /<%= table_name %>/1/edit.rwt
+  # GET /<%= table_name %>/1/edit.json
   def edit
     @<%= file_name %> = <%= class_name %>.find(params[:id])
     respond_to do |format|
       format.rwt { rwt_render }
+      format.json { rwt_ok(:<%= file_name %>=>rwt_json(@<%= file_name %>))}
     end
   end
 
   # POST /<%= table_name %>.xml
-  # POST /<%= table_name %>.rwt
+  # POST /<%= table_name %>.json
   def create
     @<%= file_name %> = <%= class_name %>.new(params[:<%= file_name %>])
     respond_to do |format|
       if @<%= file_name %>.save
         format.xml  { render :xml => @<%= file_name %>, :status => :created, :location => @<%= file_name %> }
-        format.rwt  { rwt_ok }
+        format.json  { rwt_ok }
       else
         format.xml  { render :xml => @<%= file_name %>.errors, :status => :unprocessable_entity }
-        format.rwt  { rwt_err_messages(@<%= file_name %>) }
+        format.json  { rwt_err_messages(@<%= file_name %>) }
       end
     end
   end
 
   # PUT /<%= table_name %>/1.xml
-  # PUT /<%= table_name %>/1.rwt
+  # PUT /<%= table_name %>/1.json
   def update
     @<%= file_name %> = <%= class_name %>.find(params[:id])
     respond_to do |format|

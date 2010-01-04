@@ -51,19 +51,30 @@ module Rwt
 
            var exeJs=function(xhttp){
              var ret=eval(xhttp.responseText);
-             if(ret.id){Rwt.register[ret.id]=ret;}
-             ret(Rwt);
+             if(ret.cache_id){Rwt.register[ret.cache_id]=ret;}
+             ret(Rwt,ret.url);
            };
 
-           var getJs=function(url,id){
-             if(Rwt.register[id]){
-               Rwt.register[id](Rwt)
+           var getJs=function(url,cache_id){
+             if(Rwt.register[cache_id]){
+               Rwt.register[cache_id](Rwt,url)
              }else{
-               Ext.Ajax.request({
-                 url: url,
-                 success: exeJs,
-                 failure: errJs
-               });
+               if(cache_id){
+                 Ext.Ajax.request({
+                   url: url,
+                   method: 'GET',
+                   success: exeJs,
+                   failure: errJs,
+                   params: { register_as: cache_id }
+                 });
+               }else{
+                 Ext.Ajax.request({
+                   url: url,
+                   method: 'GET',
+                   success: exeJs,
+                   failure: errJs
+                 });
+               }
              }
            };
 

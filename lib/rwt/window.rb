@@ -10,34 +10,26 @@ module Rwt
   #  title - window title, defaults to component id
   #  x, y  - window position, defaults to next cascading position
   #
-  #  on_close - function to be executed when the window is closed
-  #
   #  Any other parameter will be passed directly to the javascript library.
   #
   #  Properties:
   #  ===========
   #
-  #  title, x, y, on_close
+  #  title, x, y
   #
   #  Use
   #  ===
   #
-  #  win=window(:title=>'Test Window') do |w|
-  #    w << button(:text=>'button1') do |b|
-  #      b.on_click= message('button clicked!')
-  #    end
-  #    w.on_close= message('closed')
-  #  end
-  #  win.show
-  #
-  #  or
-  #
   #  window('Test Window') do |w|
-  #    w << button('button1') do |b|
-  #      b.on_click= message('button clicked!')
+  #    button('button1') do |b|
+  #      b.on('click') do
+  #        message('button clicked!')
+  #      end
   #    end
-  #    w.on_close= message('closed')
-  #  end.show
+  #    w.on('close) do
+  #      message('closed')
+  #    end
+  #  end
   #
   def window(*config,&block)
     Window.new(*config,&block)
@@ -50,9 +42,6 @@ module Rwt
     attr_accessor :x,:y 
     attr_accessor :title
     attr_accessor :visible
-
-    attr_accessor :on_close
-    attr_accessor :before_render, :after_render # code to be excuted before and after normal render
 
     def self.new_x
       @@x+= 20; @@x= 40 if @@x > 100

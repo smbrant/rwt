@@ -2,8 +2,8 @@ module Rwt
   class JsonStore < Rwt::Component
     def render_create
       @config.merge!(:fields=>@components) if @components.length > 0
-      restfull= @config.delete(:restfull) || true
-      @config.merge!(:restfull=>restfull)
+      restful= @config.delete(:restful) || true
+      @config.merge!(:restful=>restful)
       autosave= @config.delete(:autoSave) || true
       @config.merge!(:autoSave=>autosave)
       autoload= @config.delete(:autoLoad) || true
