@@ -500,6 +500,8 @@ module Rwt
   require 'rwt/data'
   require 'rwt/jsonstore'
   require 'rwt/grid'
+  require 'rwt/columnmodel'
+  require 'rwt/column'
 
   # Load the default javascript adapter
   load_adapter
