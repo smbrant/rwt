@@ -502,6 +502,7 @@ module Rwt
   require 'rwt/grid'
   require 'rwt/columnmodel'
   require 'rwt/column'
+  require 'rwt/paging'
 
   # Load the default javascript adapter
   load_adapter
