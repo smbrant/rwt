@@ -63,7 +63,11 @@ module Rwt
       @x= @config.delete(:x) || Window.new_x
       @y= @config.delete(:y) || Window.new_y
       @title= @config.delete(:title) || @config[:v]
-      @visible= @config.delete(:visible) || true
+      @visible= if @config.key?(:visible)
+            @config[:visible]
+          else
+            true
+          end
     end
     
   end 

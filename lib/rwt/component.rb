@@ -33,6 +33,9 @@ module Rwt
   #
   #    can be passed as :text=>value or just value as the first parameter
   #
+  #    owned - default true, the component will be owned by enclosing component,
+  #            to exclude from owner's component list use :owned=>false.
+  #
   #  Use
   #  ===
   #
@@ -61,6 +64,7 @@ module Rwt
     attr_reader :components
     attr_reader :config
     attr_reader :owner
+    attr_reader :owned # this component should be owned? default=true
 
     # Default @config initialization
     # Components that accepts parameters in default order should override this
@@ -76,11 +80,6 @@ module Rwt
     def initialize(*config,&block)
       @event={}         # Will store event procs, see 'on' method
       @event_params={}  # Will store event parameters list
-      
-      @owner= @@owners.last if @@owners.any? # If have a owner put me in the list of owned
-      if @owner.is_a?(Component)
-        @owner.components << self
-      end
 
       @config={}
       non_hash=[]
@@ -90,6 +89,19 @@ module Rwt
             @config.merge!(p)
           else # the rest of parameters will be passed to init_default_par, override if necessary
             non_hash << p
+        end
+      end
+
+      @owned= if @config.key?(:owned)
+            @config.delete(:owned)
+          else
+            true
+          end
+
+      if @owned
+        @owner= @@owners.last if @@owners.any? # If have a owner put me in the list of owned
+        if @owner.is_a?(Component)
+          @owner.components << self
         end
       end
 

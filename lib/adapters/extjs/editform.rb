@@ -15,7 +15,6 @@ module Rwt
         end
       end
 
-      puts @id
       if @id
         url="/#{controller_name}/#{@id}.rwt" # with PUT
         meth='PUT'

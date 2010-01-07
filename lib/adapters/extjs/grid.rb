@@ -11,7 +11,8 @@ module Rwt
           @config[:cm]=comp
         end
       end
-
+      @config[:sm]=js("new Ext.grid.RowSelectionModel({sigleSelect:true})") unless @config[:sm]
+      @config[:viewConfig]={:forceFit=>true} unless @config[:viewConfig]
 
 # Didn't work, components inserted as window children, see later...
 #      if !@config[:cm]  # if do not have a cm, create one
