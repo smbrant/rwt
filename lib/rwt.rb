@@ -59,6 +59,7 @@ module Rwt
     else
       @@code_buffer << code_string
     end
+    return nil
   end
 
   def self.code # Gets code in buffer

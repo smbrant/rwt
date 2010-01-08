@@ -102,7 +102,10 @@ module Rwt
         Rwt << "#{self}.on('#{evt}',function("
         Rwt << @event_params[evt].join(',')
         Rwt << "){"
-        block.call
+        blk_return= block.call
+        if blk_return.class == String  # Returned string is inserted in buffer, ok?
+          Rwt << blk_return
+        end
         Rwt << "});"
       end
     end

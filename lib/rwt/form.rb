@@ -13,8 +13,8 @@ module Rwt
   #  ===
   #     
   #  window(:title=>'Test Form') do |w|
-  #    w << form(:url=>'/test/create') do |f|
-  #      f << button(:text=>'submit') do |b|
+  #    form(:url=>'/test/create') do |f|
+  #      button(:text=>'submit') do |b|
   #        b.on_click= f.submit
   #      end
   #    end
@@ -37,8 +37,14 @@ module Rwt
     end
     
     def init_default_par(non_hash_params)
-       @config[:url]=non_hash_params[0] if non_hash_params[0].class == String
-       @config[:title]=non_hash_params[1] if non_hash_params[1].class == String
+      # there is a conflict with ActiveRecordHelper.form that sttufs an extra initial parameter (the model?)
+      # @config[:url]=non_hash_params[0] if non_hash_params[0].class == String
+      # @config[:title]=non_hash_params[1] if non_hash_params[1].class == String
+       @config[:url]=non_hash_params[1] if non_hash_params[1].class == String
+       @config[:title]=non_hash_params[2] if non_hash_params[2].class == String
+#       non_hash_params.each do |p|
+#         puts "form: classe=#{p.class.to_s}"
+#       end
     end
     
     def init_cmp

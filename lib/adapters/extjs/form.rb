@@ -3,6 +3,7 @@
 #
 #  Revisions:
 #    dec 15 2008, smb, initial.
+#    jan 8 2010, smb, listener programming should be external
 #
 module Rwt
   class Form
@@ -16,27 +17,19 @@ module Rwt
         @config.merge!(:baseParams=> {:authenticity_token=> @authenticity_token})
       end
 
-      # Standard actioncomplete (valid if not re-defined through config):
-      @config[:listeners]={} unless @config[:listeners]
-
-#      try {
-#                          }
-#                        ev.time = t;
-#                    } catch(ex) {
-#                        this.lastError = ex;
-#                        return t;
-#                    }
-
-      @config[:listeners][:actioncomplete]=function(:form,:action,
-                              "if(action.type == 'submit'){",
-                                 "if(!action.result.message){",
-                                    "try{form.findParentByType('window').close()}catch(ex){}", # normally a window, should test?
-                                    "if (owner.ds){owner.ds.load()};", # normally a index grid
-                                 '}else{',
-                                    "Rwt.message('Mensagem',action.result.message);",
-                                 "}",
-                               "}"
-            ) unless @config[:listeners][:actioncomplete]
+#      # Standard actioncomplete (valid if not re-defined through config):
+#      @config[:listeners]={} unless @config[:listeners]
+#
+#      @config[:listeners][:actioncomplete]=function(:form,:action,
+#                              "if(action.type == 'submit'){",
+#                                 "if(!action.result.message){",
+#                                    "try{form.findParentByType('window').close()}catch(ex){}", # normally a window, should test?
+#                                    "if (owner.ds){owner.ds.load()};", # normally a index grid
+#                                 '}else{',
+#                                    "Rwt.message('Mensagem',action.result.message);",
+#                                 "}",
+#                               "}"
+#            ) unless @config[:listeners][:actioncomplete]
 
       Rwt << "var #{self}=new Ext.FormPanel(#{@config.render});"
 
