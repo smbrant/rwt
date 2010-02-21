@@ -19,7 +19,7 @@ Below the views directory you can create ruby files with code like this:
 	  end
 	end
 
-More information at http://rwt.access.srv.br
+More information at http://rwt.access.net.br
 
 == Installation
 
@@ -33,7 +33,7 @@ More information at http://rwt.access.srv.br
 *	Copy the ExtJs library in the ext subdirectory under public.
 	Get it from http://extjs.com
 
-*	You can download complete example application from http://github.com/smbrant/rwt_home (live at http://rwt.access.srv.br)
+*	You can download complete example application from http://github.com/smbrant/rwt_home (live at http://rwt.access.net.br)
 
 
-Copyright (c) 2008 smbrant, released under the MIT license
+Copyright (c) 2010 smbrant, released under the MIT license
