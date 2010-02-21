@@ -25,6 +25,7 @@ More information at http://rwt.access.srv.br
 
 *	Copy this plugin to your application:
 
+
 	$ cd myapp/vendor/plugins
 	$ git clone git://github.com/smbrant/rwt.git
 
